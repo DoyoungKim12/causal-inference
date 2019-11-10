@@ -1,10 +1,12 @@
+<br><br><br><br><br><br>
+
 # What If - Part 1
 
-[](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/)
+<br><br><br><br>
 
 # Part 1 : Causal inference without models
 
-$$$$
+<br>
 
 ## Chapter 1. A DEFINITION OF CAUSAL EFFECT
 
@@ -38,7 +40,7 @@ $$$$
 - 우리의 인과적 직관을 수리통계학적으로 이해할 수 있도록, 몇가지 표기법을 소개한다.
     - Binary Treatment A와 Binary Outcome Y를 가정하자.
     - 이 책에서는 A와 Y처럼 다른 개체에 대해 다른 값을 가질 수 있는 변수들을 **확률변수(random variable)**라 칭하겠다.
-    - `math: Y^{a=1}` : Treatment A가 1일 때(실행되었을 때)의 Y, `math: Y^{a=0}`도 이처럼 읽으면 된다.
+    - $Y^{a=1}$ : Treatment A가 1일 때(실행되었을 때)의 Y, `math: Y^{a=0}`도 이처럼 읽으면 된다.
         - 위 표기도 모두 확률변수
         - Zeus의 경우,  `math: Y^{a=1}` = 1 & `math: Y^{a=0}` = 0
         - Hera의 경우,  `math: Y^{a=1}` = 0 & `math: Y^{a=0}` = 0
