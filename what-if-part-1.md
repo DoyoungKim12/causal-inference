@@ -75,7 +75,7 @@
             - **Individual → well-defined population of individuals** (Action에 따른 Outcome 비교가 가능한!)
 
 - Zeus의 가족을 우리의 관심 집단으로 설정하자.
-    - <img src="">
+    - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_0.PNG?raw=true">
 
     - 처리를 시행했을 때와 그렇지 않을 때를 이처럼 모두 알고 있다고 가정하자.
 
