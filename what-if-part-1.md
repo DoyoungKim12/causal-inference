@@ -169,7 +169,7 @@
         - “what would be the risk if everybody had been treated?”
         - 실제로는 관찰할 수 없는 것...
         - 가상의 데이터에서는 둘 다 0.5로 같아 인과관계가 없다고 보았다.
-    - association의 : 전체 20명에 대하여, 각각 이식을 받은 사람과 그렇지 않은 사람의 사망 위험도를 계산했다.
+    - association : 전체 20명에 대하여, 각각 이식을 받은 사람과 그렇지 않은 사람의 사망 위험도를 계산했다.
         - “what is the risk in the treated?”
         - 실제로 관찰할 수 있는 것!
         - 7/13 과 3/7 은 그 값이 달라, 연관성이 존재한다고 말할 수 있다.
