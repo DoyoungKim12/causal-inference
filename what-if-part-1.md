@@ -181,9 +181,34 @@
         - 우리는 7장에서 **이러한 연관과 인과의 차이(discrepancy)를 교란(confounding)이라 칭할 것이다.**
 
 - 그렇다면 어떤 조건에서 실제 데이터를 인과추론에 사용할 수 있을까?
-    - 2장에서의 무작위 실험(randomized experiment)을 통해 가능하다!
+    - 2장에서의 무작위 시험(randomized experiment)을 통해 가능하다!
         
+<br><br><br><br>
 
+## Chapter 2. Randomized experiments
+
+## 무작위 시험
+ - 이 장에서는 확률화(Randomization)가 어떻게 인과추론을 설득력있게 만드는지 설명할 것이다.
+    - 랜덤 시행 vs. 결정론적(deterministic) 시행
+        - **무언가에 의해** 시행이 결정된다면, 그것이 결과 해석에 영향을 끼치게 된다.
+        - 따라서, 랜덤하게 시행한 결과를 얻는 것이 중요하다.
+
+<br>
+
+### 2.1. Randomization
+
+### 확률화
+
+- 이전 장에서 논의했듯, 두 잠재적 결과를 모두 관찰할 수 없다.
+    - 그렇기 때문에, 연관성만을 측정할 수 있다.
+    - 아래 그림의 물음표가 다 채워져야 인과효과를 측정할 수 있다.
+    <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_3.PNG?raw=true">
+    
+    - 무작위 시험 역시 위와 같이 다른 잠재적 결과들을 결측치(missing value)로 남긴 채로 데이터를 생성하게 된다.
+        - 하지만, 확률화는 이러한 결측치가 **우연히** 발생했다는 점을 보증한다.
+        - 따라서, 인과효과 측정이 가능하다. (정확히는, 일치추정량을 계산하는 것이 가능하다.)
+
+## 21p 맨아래부터...
 
 
 
