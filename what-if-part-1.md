@@ -62,6 +62,8 @@
     - **일반적으로는 개별적 인과관계를 파악할 수 없다**는 것이 결론이다.
         - 즉, 데이터가 누락되어 관측된 데이터의 함수로 표현될 수 없다. (가능한 예외는 Fine Point 2.1 참조)
 
+<br>
+
 ### 1.2. Average causal effects
 
 ### 평균 인과효과
@@ -79,15 +81,13 @@
 
     - 처리를 시행했을 때와 그렇지 않을 때를 이처럼 모두 알고 있다고 가정하자.
 
-    2
-
-    - 위 표에서 `math: Pr[Y^{a=1}=1] = 0.5` 임을 확인할 수 있다.
+    - 위 표에서 <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=1}=1] = 0.5">임을 확인할 수 있다.
         - 즉, 처리(심장이식)를 시행했을 때, 위 사람들 중 반절은 죽는다.
-    - 마찬가지로, `math: Pr[Y^{a=0}=1] = 0.5`라는 것도 확인할 수 있다.
+    - 마찬가지로, <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=0}=1] = 0.5">라는 것도 확인할 수 있다.
         - 즉, 처리(심장이식)를 시행하지 않았을 때에도, 위 사람들 중 반절은 죽는다.
 
     - 이제 우리는 평균 인과효과를 정의할 수 있다.
-        - 결과 Y에 대한 처리 A의 **평균 인과효과** : `math: E[Y^{a=1}]` ≠`math: E[Y^{a=0}]`
+        - 결과 Y에 대한 처리 A의 **평균 인과효과** : <img src="https://render.githubusercontent.com/render/math?math=E[Y^{a=1}] \neq E[Y^{a=0}]">
         - 따라서, 위 예시의 처리 A는 평균 인과효과가 없다고 할 수 있다.
 
 - 처리에 대한 결과가 여러 개일 경우, 2개로 정확히 정의하는 것이 필요하다.
@@ -97,44 +97,49 @@
     - 만약 평균 인과효과가 없을 때 개별 인과효과까지 없다면, sharp causal null hypothesis가 성립한다고 표현한다.
     - 이제부터는 **평균 인과효과를 간단히 인과효과라 칭하겠다.**
 
+<br>
+
 ### 1.3 Measures of causal effect
 
 ### 인과효과의 측정
 
 - 위 사례에서 인과귀무가설(causal null hypothesis)이 기각되지 않은 이유를 다시 떠올려보자.
     - 두 반사실적 리스크가 같았기 때문이다.
-    - `math: Pr[Y^{a=1}=1] = Pr[Y^{a=0}=1] = 0.5`
+    - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=1}=1] = Pr[Y^{a=0}=1] = 0.5">
     - 인과 무효(Causal null)를 표현하는 방법 : 두 값의 차이가 0, 또는 두 값의 비가 1
-
-        ![](111-6bde7fde-b7a4-40ef-8c18-ab6c46a9bddc.png)
+    <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_1.PNG?raw=true">
 
         - 각각의 명칭은 **causal risk difference, risk ratio, odds ratio**이다.
         - 위 3개의 지표들은 같은 인과효과의 크기를 다른 스케일로 보여준다.
         - 우리는 이제 위와 같은 지표들을 **효과 측정치(effect measures)**라 칭한다.
             - 추론의 목적에 맞는 효과 측정치를 사용해야 한다. (multiplicative scale vs. additive scale)
 
-    ### 1.4 Random variability
+<br>
 
-    ### 무작위 변동성
+### 1.4 Random variability
 
-    - 보통의 현실에서 우리가 얻을 수 있는 것은 모집단의 샘플 뿐이다.
-        - 따라서, 우리는 처리에 따른 정확한 결과를 알 수 없다. (추정할 뿐이다.)
+### 무작위 변동성
 
-    - 위의 제우스 family 예제로 다시 돌아가보자.
-        - 저 20명이 전체 모집단이 아닌, 훨씬 더 큰 집단의 샘플이라고 가정하자.
-        - 이제 각 반사실적 결과에 대한 확률은 추정치로 기능하게 된다.
-            - `math: \widehat{Pr}[Y^{a=0}=1] = 0.5` 는 `math: Pr[Y^{a=0}=1]` 의 일치 추정량(consistent estimator)이다.
-                - 왜냐하면, 샘플의 수가 커질수록 실제 값과 추정량의 차이는 작아지기 때문이다.
-                - 샘플링 변동성(sampling variability) 때문에 발생하는 에러는 무작위로 발생하고, 이는 큰 수의 법칙을 따르기 때문에 위처럼 말할 수 있다.
-                - 모집단의 확률 `math: Pr[Y^{a=0}=1]` 은 계산할 수 없기 때문에 샘플의 확률로 추정하되, 이를 평가하기 위해 통계적 절차가 사용된다.
+- 보통의 현실에서 우리가 얻을 수 있는 것은 모집단의 샘플 뿐이다.
+    - 따라서, 우리는 처리에 따른 정확한 결과를 알 수 없다. (추정할 뿐이다.)
 
-    - 랜덤 에러로 인한 샘플링의 변동성만을 살펴봤지만, 변동성에는 다른 원인도 존재할 수 있다.
-        - 개인의 처리에 대한 결과가 확정적이지 않고, 확률적인 경우(non-deterministic counterfactual)를 고려해야 한다.
-        - 관찰한 샘플들의 결과가 "동전던지기의 결과"일수도 있는 것이다.
-        - 게다가, 개인마다 처리에 대한 결과가 발생할 확률이 다 다를 수 있다. (양자역학은 확정적이지 않은 결과에 대한 좋은 예이다.)
+- 위의 제우스 family 예제로 다시 돌아가보자.
+    - 저 20명이 전체 모집단이 아닌, 훨씬 더 큰 집단의 샘플이라고 가정하자.
+    - 이제 각 반사실적 결과에 대한 확률은 추정치로 기능하게 된다.
+        - <img src="https://render.githubusercontent.com/render/math?math= \widehat{Pr}[Y^{a=0}=1] = 0.5">는 <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=0}=1]">의 일치 추정량(consistent estimator)이다.
+        - 왜냐하면, 샘플의 수가 커질수록 실제 값과 추정량의 차이는 작아지기 때문이다.
+        - 샘플링 변동성(sampling variability) 때문에 발생하는 에러는 무작위로 발생하고, 이는 큰 수의 법칙을 따르기 때문에 위처럼 말할 수 있다.
+        - 모집단의 확률 <img src="https://render.githubusercontent.com/render/math?math= Pr[Y^{a=0}=1]">은 계산할 수 없기 때문에 샘플의 확률로 추정하되, 이를 평가하기 위해 통계적 절차가 사용된다.
 
-    - 따라서, 인과추론에서 랜덤 에러는 두 개의 이유로 발생한다.
-        - sampling variability, non-deterministic counterfactual, or both.
-        - 하지만, (일단은 직관적 이해를 위해) 이러한 랜덤 에러는 10장까지는 무시할 것이다.
+- 랜덤 에러로 인한 샘플링의 변동성만을 살펴봤지만, 변동성에는 다른 원인도 존재할 수 있다.
+    - 개인의 처리에 대한 결과가 확정적이지 않고, 확률적인 경우(non-deterministic counterfactual)를 고려해야 한다.
+    - 관찰한 샘플들의 결과가 "동전던지기의 결과"일수도 있는 것이다.
+    - 게다가, 개인마다 처리에 대한 결과가 발생할 확률이 다 다를 수 있다. (양자역학은 확정적이지 않은 결과에 대한 좋은 예이다.)
 
-    ### 1.5
+- 따라서, 인과추론에서 랜덤 에러는 두 개의 이유로 발생한다.
+    - sampling variability, non-deterministic counterfactual, or both.
+    - 하지만, (일단은 직관적 이해를 위해) **이러한 랜덤 에러는 10장까지는 무시**할 것이다.
+
+<br>
+
+### 1.5
