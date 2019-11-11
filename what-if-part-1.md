@@ -109,9 +109,9 @@
     - 인과 무효(Causal null)를 표현하는 방법 : 두 값의 차이가 0, 또는 두 값의 비가 1
     <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_1.PNG?raw=true">
 
-        - 각각의 명칭은 **causal risk difference, risk ratio, odds ratio**이다.
+        - 각각의 명칭은 causal risk difference, risk ratio, odds ratio이다.
         - 위 3개의 지표들은 같은 인과효과의 크기를 다른 스케일로 보여준다.
-        - 우리는 이제 위와 같은 지표들을 **효과 측정치(effect measures)**라 칭한다.
+        - 우리는 이제 위와 같은 지표들을 효과 측정치(effect measures)라 칭한다.
             - 추론의 목적에 맞는 효과 측정치를 사용해야 한다. (multiplicative scale vs. additive scale)
 
 <br>
@@ -126,10 +126,10 @@
 - 위의 제우스 family 예제로 다시 돌아가보자.
     - 저 20명이 전체 모집단이 아닌, 훨씬 더 큰 집단의 샘플이라고 가정하자.
     - 이제 각 반사실적 결과에 대한 확률은 추정치로 기능하게 된다.
-        - <img src="https://render.githubusercontent.com/render/math?math= \widehat{Pr}[Y^{a=0}=1] = 0.5">는 <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=0}=1]">의 일치 추정량(consistent estimator)이다.
+        - <img src="https://render.githubusercontent.com/render/math?math=\widehat{Pr}[Y^{a=0}=1] = 0.5"> 는 <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=0}=1]">의 일치 추정량(consistent estimator)이다.
         - 왜냐하면, 샘플의 수가 커질수록 실제 값과 추정량의 차이는 작아지기 때문이다.
         - 샘플링 변동성(sampling variability) 때문에 발생하는 에러는 무작위로 발생하고, 이는 큰 수의 법칙을 따르기 때문에 위처럼 말할 수 있다.
-        - 모집단의 확률 <img src="https://render.githubusercontent.com/render/math?math= Pr[Y^{a=0}=1]">은 계산할 수 없기 때문에 샘플의 확률로 추정하되, 이를 평가하기 위해 통계적 절차가 사용된다.
+        - 모집단의 확률 <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a=0}=1]">은 계산할 수 없기 때문에 샘플의 확률로 추정하되, 이를 평가하기 위해 통계적 절차가 사용된다.
 
 - 랜덤 에러로 인한 샘플링의 변동성만을 살펴봤지만, 변동성에는 다른 원인도 존재할 수 있다.
     - 개인의 처리에 대한 결과가 확정적이지 않고, 확률적인 경우(non-deterministic counterfactual)를 고려해야 한다.
@@ -142,4 +142,51 @@
 
 <br>
 
-### 1.5
+### 1.5 Causation versus association
+
+### 원인 VS. 연관
+
+- 우리가 실제로 관찰하게 되는 데이터는 1.2의 예제와는 다르다.
+    - treatment가 0일 때와 1일 때를 모두 관찰하는 것은 불가능하다.
+    - 우리가 아는 것은 treatment level과 outcome뿐이다.
+    - 실제 우리가 볼 수 있는 데이터의 예시
+    <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_2.PNG?raw=true">
+
+- 독립(independence)
+    - 조건부 확률로 보았을 때, 조건의 변화에도 확률의 변화가 없으면 조건과 결과는 독립이다.
+    - <img src="https://render.githubusercontent.com/render/math?math=Y \independent A">
+        - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y=1|A=1] - Pr[Y=1|A=0] = 0">
+        - 위처럼 risk difference가 0이다, 또는 risk ratio와 odds ratio가 1이다 로 표현할 수도 있다.
+
+- 연관(association)
+    - 독립이 아닌 경우
+    - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y=1|A=1] \neq Pr[Y=1|A=0]">
+    - treatment와 outcome이 **연관**되어있다면 risk difference, risk ratio, odds ratio는 연관도로 기능한다(association measures).
+    - 이 연관도 역시 무작위 변동성의 영향을 받지만, 역시 10장 전까지는 무시한다.
+    
+- Causation과 association의 차이?
+    - Causation : 전체 20명에 대하여, 20명 모두가 이식을 받았을 때와 안받았을 때의 사망 위험도를 계산하여 비교
+        - “what would be the risk if everybody had been treated?”
+        - 실제로는 관찰할 수 없는 것...
+        - 가상의 데이터에서는 둘 다 0.5로 같아 인과관계가 없다고 보았다.
+    - association의 : 전체 20명에 대하여, 각각 이식을 받은 사람과 그렇지 않은 사람의 사망 위험도를 계산했다.
+        - “what is the risk in the treated?”
+        - 실제로 관찰할 수 있는 것!
+        - 7/13 과 3/7 은 그 값이 달라, 연관성이 존재한다고 말할 수 있다.
+
+- 이제 'effect'는 단순 연관을, 'causal effect'는 인과관계를 뜻하는 것으로 한다.
+    - well-known adage : “association is not causation.”
+    - 그렇다면, 위의 예시처럼 연관성은 있되, 인과관계는 존재하지 않는 상황을 어떻게 해석해야 할까?
+        - 심장이식을 받은 사람들의 사망률이 높은 것은, 심장이식 대상자의 건강상태가 더 좋지 않아서 일수도 있다!
+        - 우리는 7장에서 **이러한 연관과 인과의 차이(discrepancy)를 교란(confounding)이라 칭할 것이다.**
+
+- 그렇다면 어떤 조건에서 실제 데이터를 인과추론에 사용할 수 있을까?
+    - 2장에서의 무작위 실험(randomized experiment)을 통해 가능하다!
+        
+
+
+
+
+
+
+
