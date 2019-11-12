@@ -154,8 +154,8 @@
 
 - 독립(independence)
     - 조건부 확률로 보았을 때, 조건의 변화에도 확률의 변화가 없으면 조건과 결과는 독립이다.
-    - <img src="https://render.githubusercontent.com/render/math?math=Y \independent A">
-        - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y=1|A=1] - Pr[Y=1|A=0] = 0">
+    - <img src="https://render.githubusercontent.com/render/math?math=Y \coprod A">로 표기한다.
+        - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y=1|A=1] - Pr[Y=1|A=0] = 0">를 뜻한다.
         - 위처럼 risk difference가 0이다, 또는 risk ratio와 odds ratio가 1이다 로 표현할 수도 있다.
 
 - 연관(association)
@@ -208,7 +208,27 @@
         - 하지만, 확률화는 이러한 결측치가 **우연히** 발생했다는 점을 보증한다.
         - 따라서, 인과효과 측정이 가능하다. (정확히는, 일치추정량을 계산하는 것이 가능하다.)
 
-## 21p 맨아래부터...
+    - 교체성(Exchangeability)
+        - 예를 들어, 특정 집단을 동전 던지기로 2개 그룹으로 나누었다고 가정해보자. (흰색 그룹 & 회색 그룹)
+        - 이 때의 교체성이란, 흰색 그룹과 회색 그룹 중 어떤 그룹에 처리(treatment)가 가해지더라도 결과가 동일한 것을 뜻한다.
+            - 즉, 흰색 그룹에 처리를 가하고 회색 그룹을 대조군으로 두든, 그 반대로 하든 조건부 확률(Risk)이 같다는 말이다.
+            - <img src="https://render.githubusercontent.com/render/math?math=Pr[Y^{a}=1|A=1]">은 a에 관계없이 같다.
+    
+    - 확률화(Randomization)는 바로 이 교체성을 만족시켜 주기에 중요하다.
+        - '동전 던지기'라는 무작위 샘플링을 통해, 교체성을 만족하는 두 서브그룹을 만들었다. 
+        - 처리가 외생성(exogeneity)을 가진다는 말은 교체성을 갖는다와 동일한 뜻이다.
+        
+    - 교체성을 통해, 무엇을 얻을 수 있는가?
+        - 교체성이 만족된다면, 특정 그룹의 결과는 전체의 결과와 같다.
+            - 어느 그룹에 처리가 이루어지든 조건부 확률이 같다면, 전체 그룹의 확률 또한 같기 때문이다.
+            - 따라서, 흰색 그룹에/처리를 가했을 때/Y가 1일 확률은 (전체 그룹에)/처리를 가했을 때/Y가 1일 확률 과 같은 의미가 된다.
+            - 수식으로 표현하자면, <img src="https://render.githubusercontent.com/render/math?math=Pr[Y=1|A=1] = Pr[Y^{a=1}=1]"> 
+            - 마찬가지로, (전체 그룹에)/처리를 가하지 않았을 때/Y가 1일 확률도 위처럼 구할 수 있다. (회색 그룹에서의 risk)
+            - **In ideal randomized experiments, association is causation.**
+            
+    - 교체성과 독립성의 차이를 이해해야 한다.
+        - 교체성이 성립한다고 독립성이 성립하는 것이 아니다.
+        - 교체성이 성립하는 상황에서 독립성이 성립하지 않는다. = 처리와 결과 사이에 인과관계가 존재한다.
 
 
 
