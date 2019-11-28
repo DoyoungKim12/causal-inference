@@ -445,7 +445,13 @@
     
 ## 효과 수정의 정의
 
-
+- 성별에 따른 서브그룹별 인과효과를 살펴보자
+    - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_6.PNG?raw=true">
+    - V는 성별을 나타내는 것으로, V=1이면 여자 / V=0이면 남자이다.
+    - 전체로 보면 리스크 차이가 없어 인과효과가 없지만, V로 구분한 서브그룹별로는 인과효과가 존재한다.
+    
+- 이제부터 V를 조절자(modifier)라고 하겠다.
+    - 
 
 
 
