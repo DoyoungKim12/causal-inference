@@ -516,7 +516,7 @@
 - 국적, 예후, 처리, 결과 의 4개 컬럼이 있는 테이블을 떠올려보자.
 - 이 챕터의 목적은 변수 V(국적)에 의한 효과 조정을 식별하는 것이다. (stratification)
     - **standardization** : 변수 L(예후)에 따라 인과효과의 강도를 표준화
-    - **stratification** : 수 V(국적)에 의한 효과 조정을 식별
+    - **stratification** : 변수 V(국적)에 의한 효과 조정을 식별
     - 하지만, 현실에서는 stratification이 standardization의 대안으로 쓰인다. (많은 연구자들이 stratification과 adjustment를 동일어로 생각)
     - 사실 변수 L로 서브그룹을 만들어서 평균인과효과를 측정하면, 그것이 조건부 효과 측정치가 된다.
     
@@ -532,7 +532,7 @@
     
 <br>
 
-### 4.5 Matching as another form of adjustmen
+### 4.5 Matching as another form of adjustment
     
 ### 매칭 (조정의 또다른 형태)
 
@@ -543,7 +543,14 @@
     - 조건부 교체성 하에서 매칭을 적용하면, 무조건적인 교체성이 성립하여 효과측정을 바로 시도할 수 있다.
     - 매칭이 반드시 1대1(matching pair)일 필요는 없다. (1대다(matching set) 또한 가능)
         - 상대적으로 수가 더 적은 서브그룹이 다른 서브그룹의 수를 규정
+
+<br>
+
+### 4.6 Effect modification and adjustment methods
     
+### 효과 조정과 조정 방법
+
+
 
 
 
