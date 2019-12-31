@@ -559,6 +559,7 @@
             - 각 서브그룹 내 outcome의 비율(위험률)을 계산 (예후 L과 처리 A의 조합별 위험율 4개)
             - L에 관계없이, 처리 A가 동일한 그룹의 위험률 값들의 가중평균으로 **처리별 위험률**을 구함
             - 처리별 위험률의 비(ratio)로 인과효과를 산출
+        <br><br>
         - stratification/restriction, and matching : 특정 서브그룹의 조건부효과만 측정 가능
             - 특성별로 그룹을 나눔 (각각 L이 0,1인 그룹)
             - 특성별 서브그룹 내에서만 처리별 위험률의 비를 계산 
@@ -568,7 +569,14 @@
     
 - 효과 수정이 없다면, 이 네가지 접근방법으로 계산된 효과 측정치는 모두 동일하다.
 
-
-
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_8.PNG?raw=true">
+- 위 표에서 네가지 측정 도구로 인과효과를 계산해보자. (독자의 몫 = 나의 몫)
+    - Standardization, IP weighting -> 0.8
+    - stratification(L에 따른 서브그룹별 인과효과) -> L=1일때 0.5, L=0일때 2.0
+    - matching(임의의 pair를 사용) -> 1.0 
+        - Rheia-Hestia, Kronos-Poseidon, Demeter-Hera, Hades-Zeus for L = 0
+        - Artemis-Ares, Apollo-Aphrodite, Leto-Hermes for L = 1
+    - 위의 사례는 전체 그룹 또는 서브그룹을 특정하는 일이 얼마나 중요한지 잘 보여준다.
+<br><br>
 
 
