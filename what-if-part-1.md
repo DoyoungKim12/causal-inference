@@ -570,6 +570,7 @@
 - 효과 수정이 없다면, 이 네가지 접근방법으로 계산된 효과 측정치는 모두 동일하다.
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_8.PNG?raw=true">
+
 - 위 표에서 네가지 측정 도구로 인과효과를 계산해보자. (독자의 몫 = 나의 몫)
     - Standardization, IP weighting : 0.8
     - stratification(L에 따른 서브그룹별 인과효과) : L=1일때 0.5, L=0일때 2.0
