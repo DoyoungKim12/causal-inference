@@ -571,9 +571,9 @@
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_8.PNG?raw=true">
 - 위 표에서 네가지 측정 도구로 인과효과를 계산해보자. (독자의 몫 = 나의 몫)
-    - Standardization, IP weighting -> 0.8
-    - stratification(L에 따른 서브그룹별 인과효과) -> L=1일때 0.5, L=0일때 2.0
-    - matching(임의의 pair를 사용) -> 1.0 
+    - Standardization, IP weighting : 0.8
+    - stratification(L에 따른 서브그룹별 인과효과) : L=1일때 0.5, L=0일때 2.0
+    - matching(임의의 pair를 사용) : 1.0 
         - Rheia-Hestia, Kronos-Poseidon, Demeter-Hera, Hades-Zeus for L = 0
         - Artemis-Ares, Apollo-Aphrodite, Leto-Hermes for L = 1
     - 위의 사례는 전체 그룹 또는 서브그룹을 특정하는 일이 얼마나 중요한지 잘 보여준다.
