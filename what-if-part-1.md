@@ -851,7 +851,7 @@
     - A는 유전자 정보, Y는 흡연 여부, L은 심장병 발병여부이다.
     - 지난 시간에 우리는 이미 A와 Y가 독립이라고 결론내렸지만, 두 변수가 L 조건하에서는 조건부 상관관계를 가질 수 있다.
     - 위에서와 마찬가지로, L 주변에 box를 그려 다른 변수들이 L의 조건 하에 있다는 것을 암시한다.
-    - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_17.PNG?raw=true"
+    - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_17.PNG?raw=true">
     
 - L=1, 즉 심장병이 있는 사람들 중 흡연자 Y의 비율은 유전자 정보 A 값이 낮을수록 올라간다고 한다.
     - 따라서, A와 Y 사이에 조건부 상관관계가 존재한다고 말할 수 있다.
