@@ -949,7 +949,7 @@
     - 예를 들어보자. 심장수술이라는 처리 A와 사망이라는 결과 Y가 있을 때, A의 Y에 대한 인과효과를 밝히는 것은 어렵지 않다.
     - 그런데, 시술의 퀄리티를 나타내는 V를 고려하게 되었다고 해보자.
         - V의 수준에 따라, 인과효과는 차이가 있을 수 있다. (효과 수정 발생)
-        - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_19.PNG?raw=true">
+        - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/image_CH1/capture_20.PNG?raw=true">
         - V는 무작위로 할당되었다고 가정하기에, 위 도표에서처럼 A와는 독립이다.
         
 - 중요한 2개의 주의사항이 있다.
