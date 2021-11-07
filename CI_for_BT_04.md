@@ -156,7 +156,7 @@
 <br><br>
 
 (마무리는 편향 개노답 삼형제... 왼쪽부터 차례대로 충돌변수 조건화로 인한 선택편향, 교란편향, 매개변수 조건화로 인한 선택편향)
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_16.PNG?raw=true">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_16.png?raw=true">
 <br><br><br><br>
 
 ## Key Ideas
