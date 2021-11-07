@@ -96,7 +96,9 @@
 ## Confounding Bias
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_8.png?raw=true">
 (대충 둘다 쓰레기같아서 못고르겠다는 뜻)
-<br>
+
+<br><br>
+
 
 - 편향의 첫번째 큰 원인은 교란(confounding)이다. 
 - 교란은 처리와 결과가 같은 공통 원인을 공유할 때 발생한다.
