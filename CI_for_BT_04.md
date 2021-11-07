@@ -94,7 +94,7 @@
 <br><br><br><br>
 
 ## Confounding Bias
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_8.PNG?raw=true">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_8.png?raw=true">
 (대충 둘다 쓰레기같아서 못고르겠다는 뜻)
 <br>
 
@@ -118,7 +118,7 @@
 
 ## Selection Bias
 - 당신은 교란 편향이 없도록 당신의 모델에 측정가능한 모든 것들을 다 집어넣는 것이 좋은 아이디어라고 생각할 수 있다. 음, 다시 한번 생각해보자.
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_12.PNG?raw=true">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_12.png?raw=true">
 <br><br>
 
 - 편향의 두번째 큰 원인은 선택편향(selection bias)이다. 
