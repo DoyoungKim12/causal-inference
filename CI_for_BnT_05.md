@@ -33,7 +33,9 @@
 
 - 이 아름다움이 어떻게 작동하는지 살펴보자. 아래의 코드에서, 우리는 온라인 강의와 대면 가의를 비교하는 정확히 같은 분석을 하려고 한다. 하지만 신뢰 구간 등의 수학 어쩌고를 하는 대신, 우리는 그냥 회귀를 돌릴 것이다. 보다 구체적으로, 우리는 아래의 모델을 추정할 것이다.
 - <img src="https://render.githubusercontent.com/render/math?math={exam}_{i} = \beta_0 %2B \kappa {Online}_i %2B \mu_i"> 
+  
   - Online : 처리를 표시하는 것으로, 더미 변수임 (1 또는 0의 값만 가지고, 이 경우에는 온라인 수업일 때 1, 대면 수업일 때 0)
+  
   - <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=0] = \beta_0"> 이고, <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] = \beta_0 %2B \kappa"> 이니까 <img src="https://render.githubusercontent.com/render/math?math=\kappa">가 우리가 찾고자 하는 ATE가 되겠다.
 
 ```python
