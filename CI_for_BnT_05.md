@@ -57,7 +57,7 @@ result.summary().tables[1]
 <br><br>
 
 - 정말 놀랍다. 우리는 ATE를 추정할 수 있을 뿐만 아니라, 공짜로 신뢰구간과 P-Value까지 확인할 수 있다! 게다가, 우리는 회귀식이 정확히 우리가 하고자 했던 것을 수행하고 있는 것을 볼 수 있다.
-  - T=0, 즉 대면수업을 받은 샘플들의 표본평균 <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=0]">은 intercepy의 값과 정확히 일치한다.
+  - T=0, 즉 대면수업을 받은 샘플들의 표본평균 <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=0]">은 intercept의 값과 정확히 일치한다.
   - 온라인 포맷(format_ol)의 coef(계수)는 처리군과 대조군의 차이와 정확히 일치한다. (<img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] - E[Y|T=0]">)
 <br><br>
 
