@@ -82,7 +82,48 @@ beta = regress(y, X)
 beta
 ```
 
-- df 
+- 인과추론에서는 주로 변수 T가 결과 y에 미치는 인과적 영향만을 추정하고 싶어하기 때문에, 우리는 이 효과를 추정하기 위해 하나의 변수만을 고려하는 회귀식을 사용할 것이다. 만약 다른 변수를 추가하게 되더라도, 그건 보통 보조에 불과하다. 다른 변수를 추가하는 것이 처리의 인과효과를 추정하는 데에 도움을 줄 수는 있겠지만, 우리는 그들의 파라미터(계수)를 추정하는 것에 별로 관심이 없다. 
+- 단변량 회귀의 변수 T에 대해, 이와 연관된 파라미터는 아래와 같이 주어진다.
+  - <img src="https://render.githubusercontent.com/render/math?math=\beta_1 = \frac{Cov(Y_i,T_i)}{Var(T_i)}">
+  - T가 무작위 할당되었다면, <img src="https://render.githubusercontent.com/render/math?math=\beta_1">은 ATE이다. 
+<br><br>
+
+- 다른 모든 변수가 보조이고, 우리가 정말로 궁금한 것은 T와 연관된 파라미터 <img src="https://render.githubusercontent.com/render/math?math=\kappa">라고 하자. <img src="https://render.githubusercontent.com/render/math?math=\kappa">는 아래의 수식을 통해 계산할 수 있다. 
+  - <img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0 %2B  \kappa T_i %2B \beta_1X_{1i} %2B ... %2B \beta_kX_{ki} + \mu_i">
+  - <img src="https://render.githubusercontent.com/render/math?math=\kappa = \frac{Cov(Y_i,\tilde{T_i})}{Var(\tilde{T_i})}">
+    - <img src="https://render.githubusercontent.com/render/math?math=\tilde{T_i}">는 T에 대한 X1 ~ Xk의 모든 공변량의 회귀식으로부터 나온 잔차(residual)이다. 이제 이게 얼마나 멋진 것인지 감사하자. (??뭐지) 이것은 다변량 회귀의 계수가 **모델의 다른 변수들의 효과를 고려하고 난** 동일한 회귀의 이변량 계수임을 의미한다. 인과추론의 관점에서, <img src="https://render.githubusercontent.com/render/math?math=\kappa">는 모든 다른 변수들을 예측에 사용해버린 후의 T의 이변량 계수이다. 
+<br><br>
+
+- 이 뒤에는 멋진 직관이 숨겨져 있다. 우리가 다른 변수들을 사용해서 T를 예측할 수 있다면, 이는 곧 무작위가 아니라는 것을 의미한다. 하지만, 일단 우리가 다른 사용 가능한 변수들을 제어한다면 T가 무작위만큼 좋도록 만들 수 있다. 이렇게 하기 위해, 우리는 다른 변수들로부터 T를 예측하기 위해 선형회귀를 사용한다. 그리고 그 회귀식의 잔차인 <img src="https://render.githubusercontent.com/render/math?math=\tilde{T_i}">를 가져온다. 당연히, <img src="https://render.githubusercontent.com/render/math?math=\tilde{T_i}">는 우리가 이미 T를 예측할 때 썼던 다른 변수들에 의해 예측되지 못한다. 아주 우아하게 말해보자면, <img src="https://render.githubusercontent.com/render/math?math=\tilde{T_i}">는 그 어떤 변수와도 연관되지 않은 처리이다. 
+<br><br>
+
+- 참고로, 이 또한 선형 회귀의 속성이다. 잔차는 잔차를 생성한 모형의 변수와 항상 직교하거나 상관 관계가 없다. 더 멋진 사실은 이것들이 수학적 진실이라 데이터가 어떻게 생겨먹든 상관이 없다는 것이다. 
+```python
+e = y - X.dot(beta)
+print("Orthogonality imply that the dot product is zero:", np.dot(e, X))
+X[["format_ol"]].assign(e=e).corr()
+
+# Orthogonality imply that the dot product is zero: [7.81597009e-13 4.63984406e-12]
+```
+<br><br>
+
+## Regression For Non-Random Data
+- 여기까지 우리는 무작위 실험의 데이터를 다뤄왔다. 그러나, 알다시피 그런 실험은 매우 비용이 많이 들거나 말그대로 불가능하다. 이러한 이유로 인해, 이제부터는 무작위가 아니거나 관찰된 데이터를 살펴볼 것이다. 아래의 예시에서 우리는 추가 교육을 받은 기간이 시급에 미치는 영향을 추정해볼 것이다. 이미 짐작했겠지만, 교육에 대해 실험을 수행하는 것은 매우 어렵다. 이런 경우에 우리가 가진 것은 관찰 데이터가 전부이다.
+- 먼저, 아주 쉬운 모델을 가정해보자. 우리는 시급에 로그를 씌운 값을 교육 기간으로 회귀할 것이다. 로그글 씌운 것은 파라미터 추정치가 퍼센트(%)로의 의미를 갖게 하기 위함이다. 즉, 우리는 1년의 추가 교육이 시급 인상의 몇 퍼센트 기여했는지 말할 수 있다. 
+  - <img src="https://render.githubusercontent.com/render/math?math=log(hwage)_i = \beta_0 %2B \beta_1{educ}_i %2B \mu_i">
+
+```python
+wage = pd.read_csv("./data/wage.csv").dropna()
+model_1 = smf.ols('np.log(hwage) ~ educ', data=wage.assign(hwage=wage["wage"]/wage["hours"])).fit()
+model_1.summary().tables[1]
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_21.PNG?raw=true">
+
+- <img src="https://render.githubusercontent.com/render/math?math=\beta_1">의 추정치는 0.0536으로, (0.039, 0.068)의 95% 신뢰구간을 가진다. 이는 모델이 교육받는 년수가 1년 증가할 때마다 임금이 5.3%씩 증가할 것으로 예측했다는 것을 의미한다. 
+- 
+
+
+
 
 
 
