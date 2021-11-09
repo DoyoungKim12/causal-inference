@@ -59,11 +59,30 @@ result.summary().tables[1]
 - 정말 놀랍다. 우리는 ATE를 추정할 수 있을 뿐만 아니라, 공짜로 신뢰구간과 P-Value까지 확인할 수 있다! 게다가, 우리는 회귀식이 정확히 우리가 하고자 했던 것을 수행하고 있는 것을 볼 수 있다.
   - T=0, 즉 대면수업을 받은 샘플들의 표본평균 <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=0]">은 intercept의 값과 정확히 일치한다.
   - 온라인 포맷(format_ol)의 coef(계수)는 처리군과 대조군의 차이와 정확히 일치한다. (<img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] - E[Y|T=0]">)
+
 <br><br>
 
 ## Regression Theory
+- 선형회귀가 어떻게 구성되고 (계수를) 어떻게 추정하는지와 같은 깊은 이야기까지 꺼내진 않을 것이다. 그러나, 약간의 이론은 큰 도움이 될 것이다.
+- 먼저, 회귀는 이론상 최적의 선형 예측 문제를 푼다.
+  - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_20.PNG?raw=true">
+  - <img src="https://render.githubusercontent.com/render/math?math=\beta^*">을 파라미터들의 벡터라고 해보자. <br>선형회귀는 오차 제곱의 평균, 즉 mean squared error(MSE)를 최소로 하는 파라미터의 값을 찾는 것이다. <br>만약 이걸 미분하여 0이 되도록 한다면, 이 문제에 대한 선형 해는 아래와 같이 주어진다.
+  - <img src="https://render.githubusercontent.com/render/math?math=\beta^* = E[X_i^'X_i]^{-1}E[X_i^'Y_i]">
+  - 이 베타를 추정하는 방법은 아래와 같다. 하지만 내 말을 그대로 믿진 말라. 수식보다 코드를 더 잘 이해한다면, 아래 코드를 보아라.
+  - <img src="https://render.githubusercontent.com/render/math?math=\hat\beta = (X_i^'X_i)^{-1}X_i^'Y_i">
 
+```python
+X = data[["format_ol"]].assign(intercep=1)
+y = data["falsexam"]
 
+def regress(y, X): 
+    return np.linalg.inv(X.T.dot(X)).dot(X.T.dot(y))
+
+beta = regress(y, X)
+beta
+```
+
+- df 
 
 
 
