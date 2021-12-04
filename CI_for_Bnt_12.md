@@ -5,6 +5,7 @@
 <br><br>
 
 ## Don’t Put All your Eggs in One Basket
+- 우리는 지난 시간에 $E\[Y/barT=1] - E\[Y/barT=0]\bar X$
 
 
 
