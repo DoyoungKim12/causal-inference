@@ -137,7 +137,8 @@ plt.legend();
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
 def doubly_robust_wrong_ps(df, X, T, Y):
-    # wrong PS model
+    # wrong 
+    S model
     np.random.seed(654)
     ps = np.random.uniform(0.1, 0.9, df.shape[0])
     mu0 = LinearRegression().fit(df.query(f"{T}==0")[X], df.query(f"{T}==0")[Y]).predict(df[X])
@@ -171,13 +172,48 @@ print(f"ATE 95% CI:", (np.percentile(ates, 2.5), np.percentile(ates, 97.5)))
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_31.PNG?raw=true">
 
-- 
+- $\hat{P(X_i)}$가 정확히 판별되었다고 가정하자. 이 경우에서는 $E\[T_i-\hat{P(X_i)}] = 0$이 되는데, 이는 $\hat{\mu_1(X_i)}$의 영향을 받는 항을 지우게 된다. 따라서 doubly robust estimator는 propensity score weighting estimator로 축소되는데, 이는 가정에 의하여 올바른 추정을 수행한다.
 
+<br><br>
 
+- 다시 한 번, 당신이 공식보다 코드를 더 신뢰한다면 아래에 실제 증명을 위한 코드가 있다. 이번에는 2개의 회귀모델을 정규분포에서 추출되는 무작위 변수로 바꾸었다. 따라서 $\hat{\mu(X_i)}$가 확실히 부정확한 추정치가 되었고, 여전히 우리는 이 추정이 우리가 이전에 관찰했던 0.38 정도의 ATE 추정치 수준을 회복하려 하는 것을 관찰할 수 있다.
+```python
+from sklearn.linear_model import LogisticRegression, LinearRegression
 
+def doubly_robust_wrong_model(df, X, T, Y):
+    np.random.seed(654)
+    ps = LogisticRegression(C=1e6).fit(df[X], df[T]).predict_proba(df[X])[:, 1]
+    
+    # wrong mu(x) model
+    mu0 = np.random.normal(0, 1, df.shape[0])
+    mu1 = np.random.normal(0, 1, df.shape[0])
+    return (
+        np.mean(df[T]*(df[Y] - mu1)/ps + mu1) -
+        np.mean((1-df[T])*(df[Y] - mu0)/(1-ps) + mu0)
+    )
+```
+```python
+doubly_robust_wrong_model(data_with_categ, X, T, Y)
+# 0.3745648055762825
+```
 
+- 그리고 여기에서도 부트스트랩을 사용하여 분산이 조금 증가한 점을 확인할 수 있다.
+```python 
+np.random.seed(88)
+parallel_fn = delayed(doubly_robust_wrong_model)
+wrong_mux = Parallel(n_jobs=4)(parallel_fn(data_with_categ.sample(frac=1, replace=True), X, T, Y)
+                               for _ in range(bootstrap_sample))
+wrong_mux = np.array(wrong_mux)
+```
+```python
+print(f"ATE 95% CI:", (np.percentile(ates, 2.5), np.percentile(ates, 97.5)))
+# ATE 95% CI: (0.3536507259630512, 0.4197834129772669)
+```
 
+<br><br>
 
+- doubly robust estimation의 강력함에 대해 설득되었길 바란다. 이 마법은 인과추론에서 우리의 인과 추정치로부터 편향을 제거하는 방법이 2가지가 있기 때문에 가능하다. 우리는 처리 메커니즘 또는 결과 메커니즘을 모델링할 수 있다. 이 둘중 하나만 제대로 하게 된다면, 우리는 앞으로 나아갈 수 있다. 
+- 경고를 하나 하자면, 실제로는 둘 중 하나를 제대로 모델링하는 것도 굉장히 어려운 일이다. 오히려 둘 다 100% 정확하지 않은 경우가 훨씬 많다. 이 둘은 모두 잘못된 추정치이지만, 잘못된 이유가 다르다. 이 경우에는 doubly robust 추정치를 쓰는 것이 좋은지, 아니면 단일 모델을 사용하는 것이 좋은지를 결정해야 하는데 아직은 정확히 결론이 나지 않았다. 개인적으로는 여전히 doubly robust 추정치를 사용하는 것을 선호하는데, 그 이유는 최소한 이 모델은 둘 중 하나라도 맞추었을 때 정확한 추정치를 제공할 여지를 남겨두기 때문이다. 
 
 
 
