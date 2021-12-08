@@ -71,7 +71,7 @@ $$\hat{Y} = \hat{\beta_1}X_1 + \hat{\beta_2}X_2$$
 <br><br>
 
 - 마지막 회귀에서의 계수는 모든 feature를 사용한 회귀식에서와 같을 것이다. 그런데 이게 어떻게 우리에게 도움이 된다는 것일까? 우리는 개인 더미변수를 사용한 모델의 추정치를 2개로 나눌 수 있다. 먼저, 우리는 더미변수들을 각각 결과와 다른 feature들을 예측하는 데에 사용했다. 이것이 각각 위의 1단계와 2단계이다.
-- 이제, 더미 변수로 회귀식을 구성하는 것이 그 더미에 대한 평균을 추정하는 것만큼 단순하다는 것을 확인해보자. 우리의 데이터가 그게 진짜라는 사실을 보여줄 것이다. 연도를 더미변수로 하여, 그 변수에 대한 함수로 임금을 예측하는 모델을 만들어보자.
+- 이제, 더미 변수로 회귀식을 구성하는 것이 그 더미에 대한 평균을 추정하는 것만큼 단순하다는 것을 확인해보자. 우리의 데이터가 그게 진짜라는 사실을 보여줄 것이다. 연도를 더미변수로 하여, 그 변수로 구성한 함수로 임금을 예측하는 모델을 만들어보자.
 
 ```python
 mod = smf.ols("lwage ~ C(year)", data=data).fit()
@@ -79,16 +79,133 @@ mod.summary().tables[1]
 ```
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_35.PNG?raw=true">
 
+- 이 모델이 평균 임금을 어떻게 예측하고 있는지 보자. 1980년에는 1.3935, 81년에는 1.3935+0.1194 = 1.5129 와 같이 예측되고 있다. 이제 우리가 연도별 평균을 계산한다면 정확히 같은 결과를 얻게 된다. 
 
+```python
+data.groupby("year")["lwage"].mean()
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_36.PNG?raw=true">
 
+- 이는 우리가 패널 데이터의 모든 개인에 대해 평균을 구한다면, 우리는 본질적으로 개인 더미 변수에 대한 회귀식을 다른 변수들로 구성하는 것이 된다는 것을 의미한다. 이는 아래의 추정 과정을 이끌어내는 모티브가 된다.
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_37.PNG?raw=true">
 
+- 첫번째로 각 개인별 평균을 빼서 시간에 종속적인 변수를 만든다. 이는 독립변수와 종속변수 모두에 적용되고, 두번째로는 시간 종속적인 변수들로 회귀식을 구성하는데 여기서 가장 중요한 내용이 등장한다. 이렇게 하면 관찰되지 않은 $U_i$를 제거할 수 있다는 것이다. 왜냐하면 $U_i$는 시간의 흐름에 따라 변하지 않는 값이기 때문에, 시간의 흐름에 따른 변동치에 대한 회귀식에서는 시간의 흐름에 따라 변하지 않는 변수의 영향력이 제거되기 때문이다. 
+- 그리고 당연히 관찰되지 않은 변수만 제거되는 것은 아니다. 시간의 흐름에 따라 변하지 않는 모든 변수가 제거된다. 따라서, 그런 변수들은 애초에 모델에 적용하는 것이 불가능하다.
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_38.PNG?raw=true">
 
+<br><br>
 
+- 어떤 변수가 위와 같은 특성을 가지는지 체크하기 위해, 데이터를 개인별로 그룹화하고 각 그룹의 표준편차 합계를 구할 수 있다. 만약 이 값이 0이라면, 시간에 따라 변하지 않는 값으로 해석할 수 있다. 
+```python
+data.groupby("nr").std().sum()
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_39.PNG?raw=true">
 
+- 우리의 데이터에서는 인종과 관련된 더미변수(black, hisp)를 제거해야 하는데, 이는 개인에 대해 시간의 변화와 관계없이 일정한 값을 가지기 때문이다, 또한, 우리는 education 변수도 제거해야한다. 직업 변수도 사용하지 않는 것이 좋은데, 해당 변수는 아마도 결혼이 임금에 미치는 영향을 중재하는 변수(mediator)일 것이다. 우리가 사용할 변수를 골랐으니, 이제는 모델로 효과를 추정할 시간이다. 
+- 모델을 구성하기 위해, 먼저 개인별 평균값 데이터를 가져오자. 개인별로 모든 변수를 그룹화하고 그 안에서 평균값을 구하여 얻을 수 있다.
 
+```python
+Y = "lwage"
+T = "married"
+X = [T, "expersq", "union", "hours"]
 
+mean_data = data.groupby("nr")[X+[Y]].mean()
+mean_data.head()
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_40.PNG?raw=true">
+
+- 평균만큼의 값을 빼주기(demean) 위해, 원본 데이터의 인덱스가 개인 식별자가 되도록 설정해야 한다. 그러면 단순히 데이터프레임을 빼줌으로써 평균만큼의 값을 뺄 수 있다.
+
+```python
+demeaned_data = (data
+                 .set_index("nr") # set the index as the person indicator
+                 [X+[Y]]
+                 - mean_data) # subtract the mean data
+
+demeaned_data.head()
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_41.PNG?raw=true">
+
+- 마지막으로, 시간 종속적인 이 데이터(time-demeaned data)로 수정된 효과 모델(fixed effect model)을 구성할 수 있다.
+
+```python
+mod = smf.ols(f"{Y} ~ {'+'.join(X)}", data=demeaned_data).fit()
+mod.summary().tables[1]
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_42.PNG?raw=true">
+
+- 만약 우리가 수정된 효과 모델이 모든 누락된 변수들로 인한 편향을 제거한다고 믿는다면, 이 모델은 결혼이 남성의 임금을 11% 가량 높인다고 말해주고 있다. 이 결과는 매우 중요하다. 여기서 자세히 봐야할 점 하나는 표준오차가 클러스터화되어야 한다는 것이다. 따라서, 우리의 모든 추정을 손으로 일일히 하는 대신, 우리는 linearmodels 라이브러리를 사용하여 cluster_entity라는 argument를 True 값으로 설정할 수 있다.
+
+```python
+from linearmodels.panel import PanelOLS
+mod = PanelOLS.from_formula("lwage ~ expersq+union+married+hours+EntityEffects",
+                            data=data.set_index(["nr", "year"]))
+
+result = mod.fit(cov_type='clustered', cluster_entity=True)
+result.summary.tables[1]
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_43.PNG?raw=true">
+
+- 여기서의 계수 추정치가 우리가 이전에 얻었던 값과 일치하는 것을 확인하자. 달라진 점은 표준 오차가 조금 더 커졌다는 점이다. 이제 이 결과를 시계열을 고려하지 않은 단순 OLS 모델과 비교해보자. 이를 위해, 시간의 변화에 일정한 변수들을 다시 넣을 것이다.
+
+```python
+mod = smf.ols("lwage ~ expersq+union+married+hours+black+hisp+educ", data=data).fit()
+mod.summary().tables[1]
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_44.PNG?raw=true">
+
+- 이 모델은 결혼이 남성의 임금을 14% 증가시켰다고 말한다. 우리가 수정된 효과모델로 추정한 값보다 큰 수치이다. 이는 지능, 외모와 같은 고정된 개별 요인으로 인해 생략된 일부 변수의 편향이 모델에 더해지지 않았음을 나타낸다. 
+
+<br><br>
+
+## Visualizing Fixed Effects
+- 수정된 효과모델이 어떻게 동작하는지에 대한 우리의 직관을 확장하기 위해, 다른 예제를 좀 더 들여다보자. 당신이 빅테크 기업에서 일하고, 인앱 구매에 옥외광고 마케팅 캠페인이 미친 효과를 측정하려고 한다고 가정해보자. 과거의 데이터를 볼 때, 당신은 마케팅 부서가 구매 레벨이 낮은 도시의 옥외광고에 더 많은 돈을 사용하는 경향이 있다는 사실을 알아냈다. 이게 옳은 결정일까? 매출이 급증했다면 그렇게나 많은 광고를 할 필요도 없었을 것이다. 이 데이터에 대해 회귀식을 세운다면, 마케팅에 높은 비용을 지불할수록 인앱 구매가 낮아지는 것처럼 나올 것이다. 그리고 그 이유는 마케팅 투자가 소비가 적은 지역에 편향되어있기 때문이다.
+
+```python
+toy_panel = pd.DataFrame({
+    "mkt_costs":[5,4,3.5,3, 10,9.5,9,8, 4,3,2,1, 8,7,6,4],
+    "purchase":[12,9,7.5,7, 9,7,6.5,5, 15,14.5,14,13, 11,9.5,8,5],
+    "city":["C0","C0","C0","C0", "C2","C2","C2","C2", "C1","C1","C1","C1", "C3","C3","C3","C3"]
+})
+
+m = smf.ols("purchase ~ mkt_costs", data=toy_panel).fit()
+
+plt.scatter(toy_panel.mkt_costs, toy_panel.purchase)
+plt.plot(toy_panel.mkt_costs, m.fittedvalues, c="C5", label="Regression Line")
+plt.xlabel("Marketing Costs (in 1000)")
+plt.ylabel("In-app Purchase (in 1000)")
+plt.title("Simple OLS Model")
+plt.legend();
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_44.PNG?raw=true">
+
+<br><br>
+
+- 인과추론에 대해 잘 알고 있었던 당신은 수정된 효과 모델을 사용하기로 결정한다. 모델에 각 도시의 더미변수를 추가하기로 한 것이다. 이 모델은 시간의 흐름에 일정한 각 도시의 특징을 제어하기 때문에, 만약 어떤 한 도시가 구매율이 좀 낮더라도 우리는 이를 포착할 수 있다. 모델을 실행해본다면, 마케팅 비용이 높을수록 인앱 구매도 늘어나는 것을 확인할 수 있다.
+```python
+fe = smf.ols("purchase ~ mkt_costs + C(city)", data=toy_panel).fit()
+
+fe_toy = toy_panel.assign(y_hat = fe.fittedvalues)
+
+plt.scatter(toy_panel.mkt_costs, toy_panel.purchase, c=toy_panel.city)
+for city in fe_toy["city"].unique():
+    plot_df = fe_toy.query(f"city=='{city}'")
+    plt.plot(plot_df.mkt_costs, plot_df.y_hat, c="C5")
+
+plt.title("Fixed Effect Model")
+plt.xlabel("Marketing Costs (in 1000)")
+plt.ylabel("In-app Purchase (in 1000)");
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_45.PNG?raw=true">
+
+- 저 위의 이미지가 수정된 효과모델이 무엇을 하는지에 대해 말해주는 것에 감사하자. 수정된 효과(fixed effect)는 **도시 하나당 하나의 회귀식**을 세우는 것이다. 또한 각 회귀선이 평행하다는 것도 확인하자. 각 회귀선의 기울기는 인앱 구매에 대한 마케팅 비용의 효과를 의미한다. 따라서 **수정된 효과는 인과효과가 모든 개인에 대해 동일하다고 가정한다.** 이는 관점에 따라 약점이 될 수도, 강점이 될 수도 있다. 만약 각 도시별 인과효과를 찾고자 한다면 이는 약점이 된다. 각 도시별 인과효과의 차이를 알 수 없기 때문이다. 그러나 인앱 구매에 대한 마케팅의 전반적인 효과를 찾고자 한다면 이러한 패널 구조의 데이터는 매우 유용한 레버리지가 된다.
+
+<br><br>
+
+## Time Effects
+- 
 
 
 
