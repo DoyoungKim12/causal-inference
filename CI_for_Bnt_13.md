@@ -179,7 +179,7 @@ plt.ylabel("In-app Purchase (in 1000)")
 plt.title("Simple OLS Model")
 plt.legend();
 ```
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_44.PNG?raw=true">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_45.PNG?raw=true">
 
 <br><br>
 
@@ -198,7 +198,7 @@ plt.title("Fixed Effect Model")
 plt.xlabel("Marketing Costs (in 1000)")
 plt.ylabel("In-app Purchase (in 1000)");
 ```
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_45.PNG?raw=true">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_46.PNG?raw=true">
 
 - 저 위의 이미지가 수정된 효과모델이 무엇을 하는지에 대해 말해주는 것에 감사하자. 수정된 효과(fixed effect)는 **도시 하나당 하나의 회귀식**을 세우는 것이다. 또한 각 회귀선이 평행하다는 것도 확인하자. 각 회귀선의 기울기는 인앱 구매에 대한 마케팅 비용의 효과를 의미한다. 따라서 **수정된 효과는 인과효과가 모든 개인에 대해 동일하다고 가정한다.** 이는 관점에 따라 약점이 될 수도, 강점이 될 수도 있다. 만약 각 도시별 인과효과를 찾고자 한다면 이는 약점이 된다. 각 도시별 인과효과의 차이를 알 수 없기 때문이다. 그러나 인앱 구매에 대한 마케팅의 전반적인 효과를 찾고자 한다면 이러한 패널 구조의 데이터는 매우 유용한 레버리지가 된다.
 
