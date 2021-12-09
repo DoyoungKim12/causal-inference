@@ -225,6 +225,7 @@ result.summary.tables[1]
 - 그 중 가장 대표적인 것은 시간에 따라 변화하는 교란변수를 가지고 있을 때이다. 고정 효과는 각 개인에게 일정한 값을 가지는 특성의 편향만을 제거한다. 예를 들어, 우리가 책을 많이 읽고 양질의 영양분을 섭취하여 지능 수준을 높일 수 있다고 가정해보자. 이는 더 높은 연봉과 반려자를 갖게 하는 원인이 될 것이다. 고정효과는 이 측정되지 않은 지능이라는 교란으로 인한 편향을 제거할 수가 없는데, 이는 지능이 시간에 따라 변하기 때문이다. 
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_48.PNG?raw=true">
+(In the Back to the Future franchise, the DeLorean time machine is a time travel device made by retrofitting a DMC DeLorean vehicle with a flux capacitor.)
 
 - 고정효과가 실패하는 또다른 덜 대표적인 사례는 **역인과관계**가 존재할 때이다. 예를 들어, 결혼이 더 많은 돈을 벌게 하는 요인이 아니라고 해보자. 더 많이 버는 것이 결혼할 확률을 높일 수도 있는 것이다. 이 경우에는 이 둘이 양의 상관관계를 보이지만 임금이 먼저다. 이들은 시간에 따라 변화하고 변화의 방향도 같기 때문에, 고정효과로는 이를 제어하기가 불가능하다.  
 
