@@ -1,21 +1,23 @@
 <br><br><br><br>
 
-# 5. The Unreasonable Effectiveness of Linear Regression
+# 5. Evaluating Causal Models
 
 <br><br>
 
-## All You Need is Regression
-- 인과추론을 다룰 때, 우리는 각 개인에 대해 어떻게 두 가지의 잠재적 결과가 있는지 살펴보았다.
-  - <img src="https://render.githubusercontent.com/render/math?math=Y_0"> : 개인이 처리를 못받았을 때의 효과
-  - <img src="https://render.githubusercontent.com/render/math?math=Y_1"> : 개인이 처리를 받았을 때의 효과
-  - 처리 <img src="https://render.githubusercontent.com/render/math?math=T">를 0 또는 1로 설정하는 것은 이 잠재적 결과들 중 하나가 실현되게 하고, 나머지 하나는 영영 알아낼 수 없도록 만든다. 이것이 개인의 처리효과인 <img src="https://render.githubusercontent.com/render/math?math=\tau_i = Y_{1i} - Y_{0i}">를 알 수 없게 하는 것이다. (너무 당연한 이야기)
-  - <img src="https://render.githubusercontent.com/render/math?math=Y_i = Y_{0i}(1-T_i) %2B T_iY_{1i}"> (T가 1이면 Y1만 남고, T가 0이면 Y0만 남는 형태)
-<br><br>
+## 인과 모델의 평가
+- 인과관계에 대한 대부분의 자료에서, 연구자들은 그들의 방법이 옳았는지를 확인하기 위해 인위적으로 만들어진 데이터를 사용한다. 우리가 When Prediction Fails 챕터에서 했던 것과 같이, 연구자들은 각 개인의 처리 상태에 따른 2가지 결과를 모두 만들어낸다. 따라서 그들은 그들의 모델이 처리 효과를 올바르게 포착하는지 확인할 수 있다. 이는 학문적인 목적으론 나쁘지 않지만, 현실에서의 우리는 그런 사치를 누릴 수 없다. 이러한 기술을 실제 산업에 적용할 때, 우리는 왜 우리 모델이 더 나은지, 왜 그것이 현재의 모델을 대체해야 하는지, 왜 그것이 비참하게 실패하지 않는지를 증명하기 위해 계속해서 질문을 받을 것이다. 이것은 너무 중요해서, 왜 우리가 인과적 추론 모델을 실제 데이터로 어떻게 평가해야 하는지를 설명하는 어떠한 자료도 볼 수가 없는건지 이해가 되질 않는다.
+<br>
 
-- 따라서, 현재로써는 평균 인과 효과를 추정하는 단순한 문제에만 집중해보자. 우리는 다른 사람에 비해 특정 처리에 더 잘 반응하는 사람들이 있다는 사실을 알지만, 역시 그들이 누구인지 알 수도 없다. (그걸 알아내는) 대신, 우리는 그 처리가 **평균적인** 효과가 있는지 알아내볼 것이다. 
-  - <img src="https://render.githubusercontent.com/render/math?math=ATE = E[Y_1 - Y_0]">  
-  - 이렇게 하면 처리효과가 상수로 일정한 단순한 모델을 얻을 수 있다. (<img src="https://render.githubusercontent.com/render/math?math=Y_{1i} = Y_{0i} %2B \kappa">) 만약 <img src="https://render.githubusercontent.com/render/math?math=\kappa"> 가 양수라면, 우리는 그 처리가 평균적으로 양의 효과를 가진다고 말할 수 있다. 특정 사람들에게 안좋게 작용할지라도, 평균적으로 그 영향은 양의 효과일 것이다. 
-<br><br>
+- 그 결과로, 인과추론 모델을 적용하려는 데이터 과학자들은 경영진이 그들을 신뢰하도록 설득하는 일에 어려움을 겪는다. 그들이 취하는 접근법은 이론이 얼마나 적절한지, 모델을 학습시키는 동안 얼마나 세심하게 작업했는지를 보여주는 것이다. 불행하게도, train-test split 검증 패러다임이 표준이 된 세상에서 이는 쉽지 않을 것이다. 모델의 퀄리티는 아름다운 이론보다 뭔가 더 믿을만한 것에 기반한 것이어야 한다. 생각해보자. 머신러닝은 예측모델의 검증이 매우 직관적이라는 바로 그 점 때문에 큰 성공을 거둘 수 있었다. 예측이 실제 일어난 일과 일치한다는 것을 보면 뭔가 마음이 놓이는 게 있기 때문이다. 
+<br>
 
-- 또한 우리가 ATE를 (편향 때문에) 단순히 처리군과 대조군 각각의 평균 차이로 구할 수 없었다는 사실도 기억해내보자. 편향은 주로 처리군과 대조군이 처리효과 그 자체가 아닌 다른 이유로 인해 다를 때 발생한다. 이걸 살펴보는 방법은 그들이 잠재적 결과인 <img src="https://render.githubusercontent.com/render/math?math=Y_0">에서 얼마나 다른지를 추정해보는 것이다. 
-  - <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_17.PNG?raw=true">
+- 안타깝게도, 인과추론의 경우에서 train-test 패러다임같은 뭔가를 이뤄낼 방법은 조금도 분명히 보이지 않는다. 이는 인과추론이 관찰되지 않은 값을 추정하는 것에 관심이 있기 때문이다(<img src="https://render.githubusercontent.com/render/math?math=\frac{\delta y}{\delta t}">). 우리가 볼 수 없다면, 우리의 모델이 이를 잘 추정한다는 것을 어떻게 알 수 있을까? 기억하자. 모든 개체는 처리와 결과의 관계를 나타내는 선의 기울기로 표시된 반응성을 가지고 있지만 우리가 이를 측정할 수는 없다. 
+<br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_1.PNG?raw=true">
+<br>
+
+- 이것은 우리의 머리를 감싸쥐게 만드는 매우 매우 어려운 일이고, 해답에 가까운 것을 찾는데 몇 년이 걸렸다. 확정적인 것은 아니지만 실제로 효과가 있고 설명력도 가지고 있는데, 머신러닝의 train-test 패러다임과 유사한 방식으로 인과적 추론에 접근했으면 한다. 비결은 집계된 탄력성을 사용하는 것이다. 탄력성을 개별로 추정할 수는 없더라도, 전체 그룹에 대해서는 할 수 있고 그것이 우리가 여기서 활용할 아이디어이다.
+<br>
+
+- 이 챕터에서는 
