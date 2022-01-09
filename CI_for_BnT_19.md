@@ -76,6 +76,74 @@ print("Test Score:", m2.score(prices_rnd[X], prices_rnd[y]))
 
 - 모델을 학습시킨 후, 우리는 회귀 모델에서 탄력성 값을 가져올 것이다. 다시 말하지만, 우리는 근사치를 사용한다. 
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_6.PNG?raw=true">
+
+- 두 모델은 무작위가 아닌 데이터로 학습되었다. 이제 우리는 무작위 데이터로 돌아가 예측결과를 생성할 것이다. 우리가 모든 결과물을 한 곳에 모을 수 있도록, 우리는 하나의 데이터프레임에 머신러닝 모델의 예측결과와 인과 모델의 탄력성 예측결과를 추가할 것이다. 그리고 랜덤 모델 하나를 더 추가하자. 이 모델은 예측값으로 무작위 값을 리턴하여, 벤치마크로 기능할 것이다. 
+```python
+def predict_elast(model, price_df, h=0.01):
+    return (model.predict(price_df.assign(price=price_df["price"]+h))
+            - model.predict(price_df)) / h
+
+np.random.seed(123)
+prices_rnd_pred = prices_rnd.assign(**{
+    "m1_pred": m2.predict(prices_rnd[X]), ## predictive model
+    "m2_pred": predict_elast(m1, prices_rnd), ## elasticity model
+    "m3_pred": np.random.uniform(size=prices_rnd.shape[0]), ## random model
+})
+
+prices_rnd_pred.head()
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_7.PNG?raw=true">
+
+<br><br>
+
+## Elasticity by Model Band
+- 이제 우리는 우리가 예측한 결과를 가지고 있고, 그 값들이 얼마나 정확한지를 평가해야 한다. 그리고 우리는 탄력성을 관찰할 수는 없으므로 우리가 비교할 단순한 정답(ground truth)은 
+존재하지 않는다. 대신, 우리의 탄력성 모델로부터 우리가 원했던 것이 무엇인지 다시 생각해보자. 아마도 그것이 우리가 그 값을 어떻게 평가해야 하는지에 대한 단서가 될 것이다. 
+<br>
+
+- 처리 탄력성 모델을 만드는 아이디어는 어떤 유닛이 처리에 더 민감하게, 혹은 둔감하게 반응하는지를 찾고자 하는 필요에서 시작되었다. 즉, 개인화를 원했기 때문에 시작되었던 것이다. 어떤 마케팅 캠페인은 오직 하나의 세그먼트에서만 매우 유효할지도 모른다. 할인도 오직 특정 타입의 고객에게만 작동할지도 모른다. 좋은 인과 모델은 어떤 고객이 주어진 처리에 대해 더 많이, 또는 적게 반응하는지 찾는 일을 도와야 한다. 우리의 아이스크림 예제에서, 모델은 어떤 날에 사람들이 아이스크림에 더 많은 돈을 기꺼이 지불하는지, 또는 어떤 날에 가격 탄력성이 덜 부정적으로 작용하는지를 알아내야만 하는 것이다. 
+<br>
+
+- 만약 이것이 목표라면, 어떻게든 각 유닛들을 가장 예민한 유닛부터 덜 예민한 유닛 순으로 정렬할(order) 수만 있다면 매우 유용할 것이다. 우리는 예측된 탄력성 수치를 가지고 있기 때문에, 우리는 각 유닛을 예측에 근거하여 정렬할 수 있고, 그것이 실제 탄력성에 근거한 정렬이길 기대한다. 슬프게도 그 정렬된 순서의 정확도를 각 유닛 레벨에서 평가할 수는 없다. 그러나, 그럴 필요가 없다면 어떨까? 만약, 그 대신 우리가 그 정렬된 순서에 의해 정의된 그룹을 평가하게 된다면? 만약 우리의 처리가 랜덤하게 분포되었다면(여기가 바로 무작위성이 등장하는 부분이다!), 유닛들로 이루어진 그룹의 탄력성을 평가하는 것은 쉽다. 우리에게 필요한 것은 처리군과 대조군의 결과를 비교하는 것 뿐이다. 
+<br>
+
+- 이를 더 잘 이해하기 위해, 이항 처리가 이루어지는 경우를 시각화해보자. 가격설정 예시를 그대로 가져가되, 이제는 처리가 (가격 조정이 아닌) 단순 할인이 된다. 다시 말해, 가격은 높거나(대조군) 낮거나(처리군) 둘 중 하나이다. 실제 판매량을 Y축에 두고 그래프를 그려보자. X축은 각 모델에 의해 예측된 판매량이고, 각 점의 색은 가격을 나타낸다. 그러고나서, 데이터를 3개의 같은 크기의 그룹으로 나누자. **만약 처리가 무작위로 할당되었다면,** 우리는 쉽게 각 그룹의 ATE를 계산할 수 있다. 
+
+<img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] - E[Y|T=0]">
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_8.PNG?raw=true">
+
+<br>
+
+- 위 이미지에서 우리는 첫번째 모델이 판매량을 맞추는 데에는 좋은 성능을 보이지만(실제 판매량과 높은 상관관계를 보임), 해당 그룹은 같은 수준의 처리효과를 보인다. 3개 세그먼트 중 2개는 같은 탄력성을 가지고, 마지막 세그먼트가 다른 그룹에 비해 낮은 탄력성을 가진다. 
+<br>
+
+- 반면에, 두번째 모델에서 생성된 그룹은 각기 다른 인과효과를 보인다. (판매량이 가장 많을 것으로 예측된 그룹에서 가격이 할인된 경우의 실제 판매량 차이가 더 크다.) 이는 이 모델이 개인화에도 유용하게 쓰일 수 있다는 신호이다.(판매량이 많을 것으로 예측된 유저에게 할인을 해주면 실제 판매량이 크게 오를 것으로 예상해볼 수 있다.) 마지막으로, 랜덤모델에서 생성된 그룹은 정확히 같은 탄력성을 보인다. 이는 유용하지는 않지만 예상된 결과이다. 
+<br>
+
+- 위 그래프를 보는 것만으로도, 어떤 모델이 더 좋은지 감을 잡을 수 있을 것이다. 눈으로 보기에 그룹별 탄력성이 순서에 따라 정렬이 더 잘 되어있고, 각 그룹간 차이가 클수록 더 좋은 모델이라고 할 수 있다. 따라서 여기서는 모델 2가 모델 1보다 낫다. 이를 연속적인 경우로 일반화하기 위해, 우리는 탄력성을 하나의 변수를 사용하는 선형회귀 모델로 추정할 수 있다. 
+
+<img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0 + \beta_1t_i + e_i">
+
+- 만약 한 그룹의 샘플로 모델을 실행시킨다면, 우리는 해당 그룹 내부의 탄력성을 추정하게 된다. 단순 선형회귀의 이론에 의해, 우리는 아래의 식이 성립한다는 사실을 알고 있다. <img src="https://render.githubusercontent.com/render/math?math=\overline{t}">는 처리군 샘플의 처리 평균값, <img src="https://render.githubusercontent.com/render/math?math=\overline{y}">는 결과의 평균치를 의미한다. 
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_9.PNG?raw=true">
+
+```python
+@curry
+def elast(data, y, t):
+        # line coeficient for the one variable linear regression 
+        return (np.sum((data[t] - data[t].mean())*(data[y] - data[y].mean())) /
+                np.sum((data[t] - data[t].mean())**2))
+```
+
+
+
+
+
+
+
+
 
 
 
