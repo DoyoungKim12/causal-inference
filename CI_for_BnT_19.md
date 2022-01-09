@@ -110,9 +110,12 @@ prices_rnd_pred.head()
 
 - 이를 더 잘 이해하기 위해, 이항 처리가 이루어지는 경우를 시각화해보자. 가격설정 예시를 그대로 가져가되, 이제는 처리가 (가격 조정이 아닌) 단순 할인이 된다. 다시 말해, 가격은 높거나(대조군) 낮거나(처리군) 둘 중 하나이다. 실제 판매량을 Y축에 두고 그래프를 그려보자. X축은 각 모델에 의해 예측된 판매량이고, 각 점의 색은 가격을 나타낸다. 그러고나서, 데이터를 3개의 같은 크기의 그룹으로 나누자. **만약 처리가 무작위로 할당되었다면,** 우리는 쉽게 각 그룹의 ATE를 계산할 수 있다. 
 
-<img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] - E[Y|T=0]">
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_8.PNG?raw=true">
-
+<p align="center">
+    <img src="https://render.githubusercontent.com/render/math?math=E[Y|T=1] - E[Y|T=0]"\>
+</p>
+<p align="center">    
+    <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_8.PNG?raw=true">
+</p>
 <br>
 
 - 위 이미지에서 우리는 첫번째 모델이 판매량을 맞추는 데에는 좋은 성능을 보이지만(실제 판매량과 높은 상관관계를 보임), 해당 그룹은 같은 수준의 처리효과를 보인다. 3개 세그먼트 중 2개는 같은 탄력성을 가지고, 마지막 세그먼트가 다른 그룹에 비해 낮은 탄력성을 가진다. 
@@ -122,8 +125,9 @@ prices_rnd_pred.head()
 <br>
 
 - 위 그래프를 보는 것만으로도, 어떤 모델이 더 좋은지 감을 잡을 수 있을 것이다. 눈으로 보기에 그룹별 탄력성이 순서에 따라 정렬이 더 잘 되어있고, 각 그룹간 차이가 클수록 더 좋은 모델이라고 할 수 있다. 따라서 여기서는 모델 2가 모델 1보다 낫다. 이를 연속적인 경우로 일반화하기 위해, 우리는 탄력성을 하나의 변수를 사용하는 선형회귀 모델로 추정할 수 있다. 
-
-<img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0  \beta_1t_i  e_i">
+<p align="center">   
+    <img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0 %2B \beta_1t_i %2B e_i">
+</p>
 
 - 만약 한 그룹의 샘플로 모델을 실행시킨다면, 우리는 해당 그룹 내부의 탄력성을 추정하게 된다. 단순 선형회귀의 이론에 의해, 우리는 아래의 식이 성립한다는 사실을 알고 있다. <img src="https://render.githubusercontent.com/render/math?math=\overline{t}">는 처리군 샘플의 처리 평균값, <img src="https://render.githubusercontent.com/render/math?math=\overline{y}">는 결과의 평균치를 의미한다. 
 
@@ -136,10 +140,34 @@ def elast(data, y, t):
         return (np.sum((data[t] - data[t].mean())*(data[y] - data[y].mean())) /
                 np.sum((data[t] - data[t].mean())**2))
 ```
+<br>
 
+- 이제 이를 우리의 아이스크림 가격 데이터에 적용해보자. 이를 위해, 우리는 데이터를 같은 크기(band)로 나누어 탄력도를 계산해줄 함수가 필요하다. 아래의 코드가 도움을 줄 것이다.
+```python
+def elast_by_band(df, pred, y, t, bands=10):
+    return (df
+            .assign(**{f"{pred}_band":pd.qcut(df[pred], q=bands)}) # makes quantile partitions
+            .groupby(f"{pred}_band")
+            .apply(elast(y=y, t=t))) # estimate the elasticity on each partition
+```
 
+- 마지막으로, 예측 결과에 의해 구분된 각 그룹별 탄력성을 그래프로 나타내보자. 여기서, 우리는 각 모델을 그룹을 구분하여 각 그룹별 탄력성을 추정하기 위해 사용할 것이다. 
+```python
+fig, axs = plt.subplots(1, 3, sharey=True, figsize=(10, 4))
+for m, ax in enumerate(axs):
+    elast_by_band(prices_rnd_pred, f"m{m+1}_pred", "sales", "price").plot.bar(ax=ax)
+```
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_10.PNG?raw=true">
 
+<br>
 
+- 먼저, 랜덤모델(m3)을 보자. 그룹별로 큰 차이 없이 유사한 수준의 탄력성이 관찰된다. 이는 개인화에 그닥 도움이 되지 못하는데, 가격 탄력성이 높은 날과 낮은 날을 구분해주지 못하기 때문이다. 다음으로, 예측모델 m1을 보자. 이 모델은 뭔가 조짐이 좋다! 이 모델은 탄력성이 높은 그룹과 그렇지 않은 그룹을 구분하려고 노력한다. 정확히 우리가 원했던 결과이다.
+- 마지막으로, 인과모델 m2는 약간 이상해보인다. 탄력성이 아주 낮은 그룹을 특정하고 있는데, 여기서 낮음의 의미는 가격의 변동에 그만큼 민감함을 의미한다. 이렇듯 가격 변동 민감도가 높은 날을 탐지하는 것은 우리에게 매우 유용하다. 만약 그게 언제인지 우리가 알 수 있다면, 우리는 그 때 가격을 인상하는 것에 주의를 기울일 것이다. 이 모델은 덜 민감한 지역도 특정하긴 하지만, 정렬된 정도는 예측모델만큼 좋지 못하다. 
+- 그럼 이제 우리는 무엇을 결정해야 할까? 어떤 모델이 더 유용할까? 예측모델 또는 인과모델? 예측모델의 정렬이 더 나아보이지만, 인과모델은 보다 극적인 민감도를 가지는 그룹을 특정해냈다. 그룹별 탄력도를 체크하는 것이 첫번째 진단으로는 좋지만, 어떤 모델이 나은지 정확히 답하는 기준이 될 수는 없다. 우리는 더 정교한 무언가를 향해 나아가야 한다. 
+
+<br><br>
+
+## Cumulative Elasticity Curv
 
 
 
