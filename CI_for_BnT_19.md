@@ -123,7 +123,7 @@ prices_rnd_pred.head()
 
 - 위 그래프를 보는 것만으로도, 어떤 모델이 더 좋은지 감을 잡을 수 있을 것이다. 눈으로 보기에 그룹별 탄력성이 순서에 따라 정렬이 더 잘 되어있고, 각 그룹간 차이가 클수록 더 좋은 모델이라고 할 수 있다. 따라서 여기서는 모델 2가 모델 1보다 낫다. 이를 연속적인 경우로 일반화하기 위해, 우리는 탄력성을 하나의 변수를 사용하는 선형회귀 모델로 추정할 수 있다. 
 
-<img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0 + \beta_1t_i + e_i">
+<img src="https://render.githubusercontent.com/render/math?math=y_i = \beta_0  \beta_1t_i  e_i">
 
 - 만약 한 그룹의 샘플로 모델을 실행시킨다면, 우리는 해당 그룹 내부의 탄력성을 추정하게 된다. 단순 선형회귀의 이론에 의해, 우리는 아래의 식이 성립한다는 사실을 알고 있다. <img src="https://render.githubusercontent.com/render/math?math=\overline{t}">는 처리군 샘플의 처리 평균값, <img src="https://render.githubusercontent.com/render/math?math=\overline{y}">는 결과의 평균치를 의미한다. 
 
