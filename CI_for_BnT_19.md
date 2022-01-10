@@ -168,13 +168,55 @@ for m, ax in enumerate(axs):
 <br><br>
 
 ## Cumulative Elasticity Curv
+- 가격이 이진(binary) 처리로 변환되었던 예제를 다시 생각해보자. 그룹(band)별로 처리의 탄력성을 확인할 수 있었다. 우리가 그 다음으로 할 수 있는 것은 각 그룹을 그들이 처리에 민감한 정도에 따라 정렬하는 것이다. 일단 우리가 그룹들을 정렬하고 나면, 누적 탄력성 곡선(Cumulative Elasticity Curve)이라 불리는 것을 구성할 수 있다. 우리는 먼저 첫번째 그룹의 탄력성을 계산하고, 그 다음은 첫번째 그룹과 두번째 그룹의 탄력성을, 이를 반복하여 마지막에는 전체 그룹의 탄력성을 계산하게 된다. 아래의 예시로 좀 더 자세히 살펴보자.
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_11.PNG?raw=true">
 
+- 누적 탄력성의 첫번째 구간은 가장 민감한 그룹의 ATE와 같다는 사실을 위 그래프에서 확인하자. 또한, 모든 모델에서 누적 탄력성은 전체 데이터셋의 ATE로 수렴한다. 수학적으로는 누적 탄력성을 유닛 i~k까지 추정된 탄력성으로 정의할 수 있다. 
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_12.PNG?raw=true">
 
+- 누적 탄력성을 구성하기 위해, 우리는 위의 함수를 데이터셋에 반복적으로 수행하여 아래의 시퀀스를 생성한다. 이는 모델 평가 측면에서 매우 흥미로운 것인데, 왜냐하면 우리는 이에 대해 선호를 결정하는 어떤 가이드(preferences statements)를 만들 수 있기 때문이다. 
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_13.PNG?raw=true">
 
+- 먼저, 모든 k와 0보다 큰 a에 대해 모델은 아래의 부등식을 만족한다. 이는 만약 모델이 탄력성에 따라 각 유닛들을 잘 정렬시켰다면 상위 k개의 샘플에서 관찰되는 탄력성은 상위 k+a개의 샘플에서 관찰되는 탄력성보다 높아야 한다는 것이다. 또는, 단순히 말하자면 내가 상위 유닛을 관찰한다면 그들은 반드시 하위 유닛보다 높은 탄력성을 가져야 한다는 것이다. 
 
+<img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k > \hat{y^'}(t)_{k %2B a} ">
+
+- 두번째로, 모델은 모든 k와 0보다 큰 a에 대해 아래의 값이 극대화될 때 더 좋다. 직관적으로 풀이하자면 우리가 원하는 것은 단순히 상위 k개의 유닛이 더 높은 탄력성을 가지는 것 뿐만 아니라 그 차이가 가능한 한 커지는 것이다. 
+
+<img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k - \hat{y^'}(t)_{k %2B a} ">
+
+- 이를 보다 구체화하기 위해, 이 아이디어를 코드로 구현해보자. 아래 함수에 대해 몇가지 알아야 될 점이 있다. 먼저, prediction 인자로 전달되는 특정 컬럼에 저장된 값에 의해 결정되는 순서(정렬)를 가정하고 있다. 또한, 첫번째 그룹은 min_period 수만큼의 유닛을 가지고 있어 다른 그룹과 다를 수 있다. 작은 샘플사이즈로 인해 곡선의 시작 부분이 지나치게 noisy할 수 있는 것이다. 이를 수정하기 위해 첫번째 그룹부터 충분한 크기의 샘플을 넘겨주는 것을 고려할 수 있다. 마지막으로, steps 인자로 각 서브그룹마다 얼마나 많은 추가 유닛을 포함시킬지 결정할 수 있다.
+
+```python
+def cumulative_elast_curve(dataset, prediction, y, t, min_periods=30, steps=100):
+    size = dataset.shape[0]
+    
+    # orders the dataset by the `prediction` column
+    ordered_df = dataset.sort_values(prediction, ascending=False).reset_index(drop=True)
+    
+    # create a sequence of row numbers that will define our Ks
+    # The last item is the sequence is all the rows (the size of the dataset)
+    n_rows = list(range(min_periods, size, size // steps)) + [size]
+    
+    # cumulative computes the elasticity. First for the top min_periods units.
+    # then for the top (min_periods + step*1), then (min_periods + step*2) and so on
+    return np.array([elast(ordered_df.head(rows), y, t) for rows in n_rows])
+```
+
+- 이 함수를 통해, 이제 우리는 각 모델에서 생성된 값을 사용하여 누적 탄력성 곡선을 그래프로 그려볼 수 있다. 누적 탄력성 곡선을 해석하는 것은 어렵지만, 여기에 그 방법이 있다. 이게 오히려 이진 처리의 경우보다 쉬울지도 모른다. X축은 얼마나 많은 수의 샘플을 다루었는지를 의미한다. 여기서는 정규화된 값을 사용했으므로, 0.4의 뜻은 전체 샘플의 40%를 사용했다는 뜻이 된다. Y축은 다수의 샘플에 대해 우리가 예측한 탄력성을 의미한다. 따라서, 만약 곡선이 40%에서 -1의 값을 보인다면 이는 탄력성 상위 40% 유닛들의 그룹 탄력성이 -1이라는 뜻이 된다. 이상적으로 우리가 원하는 것은 가능한 한 많은 수의 샘플에 대해 가장 높은 탄력성이 관찰되는 것이다. 따라서 이상적인 곡선의 형태는 Y축의 최상단에서 시작하여 평균 탄력성 값까지 매우 완만하게 감소하는 것으로, 이 경우에는 평균 탄력도 이상의 유닛을 어느 정도 남겨두고도 높은 비율의 유닛에 처리를 가할 수 있게 될 것이다. 
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_14.PNG?raw=true">
+
+- 더 말할 필요도 없이, 3개 모델 중 어느 것도 이상적인 형태의 탄력성 곡선 근처에도 가지 못했다. 랜덤모델인 M3는 평균 탄력성 값 주변에서 진동하는 형태를 보여준다. 이는 모델이 평균 탄력도와는 다른 탄력도 값을 가지는 그룹을 찾지 못했음을 의미한다. 예측모델인 M1은 역순으로 정렬된 탄력도를 보여주는 듯 하다. 곡선이 평균 탄력성 값의 아래에서 시작하기 때문이다. 그 뿐만이 아니라, 평균치까지 빠르게 수렴하는 모습을 보여준다. 마지막으로, 인과모델인 M2는 더 흥미롭다. 누적 탄력도가 평균치로부터 점점 증가하는 모습을 보이다가 75%의 유닛을 다루는 특정 포인트에 도달하고나서 거의 0에 가까운 탄력도를 유지한다. 이는 아마도 이 모델이 아주 낮은 탄력도, 즉 가격에 매우 민감한 시기를 구분할 수 있기 때문일 것이다. 따라서 그 특정 시기에 가격을 인상하지 않는다면, 우리는 75%를 차지하는 다수의 시기에 대하여 가격 인상을 할 수도 있을 것이다. (다른 시기는 낮은 가격 민감도를 보일 것이므로)
+
+- 모델 평가의 관점에서, 누적 탄력성 곡선은 이미 그룹별 탄력도를 관찰하는 단순한 아이디어보다 훨씬 나아보인다. 여기서 우리는 보다 정밀한 모델 평가 방법을 만들어내기 위해 노력했다. 여전히, 이 곡선을 직관적으로 이해하기는 어렵다. 그렇기 때문에 우리는 더 나아진 개선안 하나를 더 해볼 수 있다.
+
+<br><br>
+
+## Cumulative Gain Curve
 
 
 
