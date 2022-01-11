@@ -217,6 +217,37 @@ def cumulative_elast_curve(dataset, prediction, y, t, min_periods=30, steps=100)
 <br><br>
 
 ## Cumulative Gain Curve
+- 다음 아이디어는 매우 간단하지만 강력한 개선안이다. 우리는 누적 탄력성 값에 샘플의 크기를 곱할 것이다. 예를 들어, 누적 탄력성 값이 40% 지점에서 -0.5라고 한다면 40% 지점의 값을 0.4에 -0.5를 곱한 -0.2로 하겠다는 것이다. 그러고나서, 우리는 이를 랜덤모델의 곡선과 비교해볼 것이다. 이 곡선은 실제로 0에서부터 시작하여 평균 처리 효과(ATE) 수준에 점점 가까워지는 직선이다. 이렇게 생각해보자. 랜덤모델의 누적 탄력성에서 모든 값은 ATE인데, 왜냐하면 이 모델은 데이터를 랜덤하게 나누기 때문이다. 원점을 지나고 기울기가 1인 직선에 ATE를 곱하면 기울기가 ATE가 되어 (0,0)과 (1,ATE)를 지나는 직선을 관찰할 수 있다. 
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_15.PNG?raw=true">
+
+- 일단 이론적인 랜덤모델의 곡선을 정의하고 나면, 우리는 이를 벤치마크로 활용하여 우리의 모델을 이와 비교해볼 수 있다. 모든 곡선은 같은 곳에서 시작해 같은 곳에서 끝난다 (각각 0, ATE) 그러나, 모델이 탄력성 기준으로 각 유닛들을 더 잘 정렬할수록 0과 1 사이의 어떤 값으로 발산해나가는 모습을 관찰할 수 있다. 예를 들어, M2는 M1보다 좋은 모델이라고 할 수 있는데 이는 끝부분의 ATE 값에 도달하기 전까지 더 큰 값으로 발산하기 때문이다. ROC 커브에 익숙한 사용자는 누적 이득(Cumulative Gain)을 인과모델의 ROC로 생각할 수 있다. 
+
+- 수학적으로 설명하자면 아래와 같다.
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_16.PNG?raw=true">
+
+- 이를 코드에 적용하기 위해 우리가 해야할 것은 단순히 비례 샘플 사이즈로 정규화하는 부분 뿐이다. 
+```python
+def cumulative_gain(dataset, prediction, y, t, min_periods=30, steps=100):
+    size = dataset.shape[0]
+    ordered_df = dataset.sort_values(prediction, ascending=False).reset_index(drop=True)
+    n_rows = list(range(min_periods, size, size // steps)) + [size]
+    
+    ## add (rows/size) as a normalizer. 
+    return np.array([elast(ordered_df.head(rows), y, t) * (rows/size) for rows in n_rows])
+```
+
+- 우리의 아이스크림 데이터에 적용하면 아래와 같은 곡선들을 관찰하게 된다. 이제 인과모델(M2)가 다른 두 모델에 비해 훨씬 낫다는 것이 명확하게 보인다. M2의 곡선은 랜덤 라인에서 M1과 M3에 비해 훨씬 많이 발산한다. 이것으로, 우리는 인과모델을 평가하는 정말 멋진 아이디어를 다뤄보았다. 이것만으로도 큰 발전이다. 우리는 탄력성 순으로 정렬하는 모델이 얼마나 정확한지를, 단순한 정답(ground truth)없이도 해내려고 노력했다. 이제 남은 것은 단 한가지로, 이러한 측정치에 신뢰구간을 포함하는 것이다. 어쨌든 우리가 야만인은 아니지 않은가? (신뢰구간 없는 추정치에 대한 경계를 나타내는 말인듯...)
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_17.PNG?raw=true">
+
+
+
+
+
+
+
 
 
 
