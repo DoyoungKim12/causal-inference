@@ -182,11 +182,15 @@ for m, ax in enumerate(axs):
 
 - 먼저, 모든 k와 0보다 큰 a에 대해 모델은 아래의 부등식을 만족한다. 이는 만약 모델이 탄력성에 따라 각 유닛들을 잘 정렬시켰다면 상위 k개의 샘플에서 관찰되는 탄력성은 상위 k+a개의 샘플에서 관찰되는 탄력성보다 높아야 한다는 것이다. 또는, 단순히 말하자면 내가 상위 유닛을 관찰한다면 그들은 반드시 하위 유닛보다 높은 탄력성을 가져야 한다는 것이다. 
 
-<img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k > \hat{y^'}(t)_{k %2B a} ">
+<p align="center">
+    <img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k > \hat{y^'}(t)_{k %2B a} ">
+</p>
 
 - 두번째로, 모델은 모든 k와 0보다 큰 a에 대해 아래의 값이 극대화될 때 더 좋다. 직관적으로 풀이하자면 우리가 원하는 것은 단순히 상위 k개의 유닛이 더 높은 탄력성을 가지는 것 뿐만 아니라 그 차이가 가능한 한 커지는 것이다. 
 
-<img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k - \hat{y^'}(t)_{k %2B a} ">
+<p align="center">
+    <img src="https://render.githubusercontent.com/render/math?math=\hat{y^'}(t)_k - \hat{y^'}(t)_{k %2B a} ">
+</p>
 
 - 이를 보다 구체화하기 위해, 이 아이디어를 코드로 구현해보자. 아래 함수에 대해 몇가지 알아야 될 점이 있다. 먼저, prediction 인자로 전달되는 특정 컬럼에 저장된 값에 의해 결정되는 순서(정렬)를 가정하고 있다. 또한, 첫번째 그룹은 min_period 수만큼의 유닛을 가지고 있어 다른 그룹과 다를 수 있다. 작은 샘플사이즈로 인해 곡선의 시작 부분이 지나치게 noisy할 수 있는 것이다. 이를 수정하기 위해 첫번째 그룹부터 충분한 크기의 샘플을 넘겨주는 것을 고려할 수 있다. 마지막으로, steps 인자로 각 서브그룹마다 얼마나 많은 추가 유닛을 포함시킬지 결정할 수 있다.
 
