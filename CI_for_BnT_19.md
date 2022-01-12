@@ -246,13 +246,57 @@ def cumulative_gain(dataset, prediction, y, t, min_periods=30, steps=100):
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_17.PNG?raw=true">
 
+<br><br>
 
+## Taking Variance Into Account
+- 탄력성 곡선을 다룰 때 편차를 고려하지 않는 것은 잘못된 것 같다. 특히 모두 선형 회귀 이론을 사용하기 때문에, 신뢰 구간을 추가하는 것은 상당히 쉬울 것이다. 신뢰구간을 구하기 위해, 우리는 먼저 선형회귀 파라미터(계수)에 대한 CI를 리턴하는 함수를 하나 만들 것이다. 나는 단순 선형회귀의 공식을 사용했지만, CI를 도출하는 데에는 원하는 다른 공식을 사용해도 무방하다. cumulative_elast_curve 함수에 약간의 수정을 가하여 탄력성의 신뢰구간을 계산할 수 있고, 아래의 그래프로 M2 모델로 구한 탄력성 곡선의 95% 신뢰구간을 확인할 수 있다. 
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_18.PNG?raw=true">
 
+```python
+def elast_ci(df, y, t, z=1.96):
+    n = df.shape[0]
+    t_bar = df[t].mean()
+    beta1 = elast(df, y, t)
+    beta0 = df[y].mean() - beta1 * t_bar
+    e = df[y] - (beta0 + beta1*df[t])
+    se = np.sqrt(((1/(n-2))*np.sum(e**2))/np.sum((df[t]-t_bar)**2))
+    return np.array([beta1 - z*se, beta1 + z*se])
+```
 
+```python
+def cumulative_elast_curve_ci(dataset, prediction, y, t, min_periods=30, steps=100):
+    size = dataset.shape[0]
+    ordered_df = dataset.sort_values(prediction, ascending=False).reset_index(drop=True)
+    n_rows = list(range(min_periods, size, size // steps)) + [size]
+    
+    # just replacing a call to `elast` by a call to `elast_ci`
+    return np.array([elast_ci(ordered_df.head(rows), y, t)  for rows in n_rows])
+```
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/bnt_2_19.PNG?raw=true">
 
+- 데이터셋의 크기가 증가할수록 CI가 점점 작아지는 것을 확인할 수 있다. 
+- 누적 이득 곡선에 대해서도 같은 방식으로 간단히 CI를 구할 수 있다. elast 함수를 elast_ci 함수로 변경하기만 하면 된다. 아래 그래프도 역시 M2 모델의 곡선이다. 주목할 점은 CI 값이 샘플사이즈가 작은 초반 구간에서 더 작다는 것이다. 그 이유는 정규화 과정에서 N으로 나눌때 그 과정이 ATE 파라미터를 축소시키고 CI도 이와 관련이 있기 때문이다. 그리고 이는 당연히 모든 모델에 동일하게 적용되기 때문에 모델간 비교에는 전혀 문제가 되지 않는다.  
 
+```python
+def cumulative_gain_ci(dataset, prediction, y, t, min_periods=30, steps=100):
+    size = dataset.shape[0]
+    ordered_df = dataset.sort_values(prediction, ascending=False).reset_index(drop=True)
+    n_rows = list(range(min_periods, size, size // steps)) + [size]
+    return np.array([elast_ci(ordered_df.head(rows), y, t) * (rows/size) for rows in n_rows])
+```
+
+<br><br>
+
+## Key Ideas
+- 우리는 이 챕터에서 탄력성 순으로 정렬하는 것에 있어 모델의 성능을 평가하는 3가지 방법에 대해 알아보았다. 인과추론 목적의 모델간 비교를 위해 사용한 것이고, 이는 쉽지 않았다. 우리는 모델이 다른 탄력성 값을 가지는 그룹을 잘 찾아낸다면, 실제로 탄력성을 관찰할 수 없더라도 모델의 평가가 가능한지 알아보려고 한 것이다. 
+
+- 우리는 여기서 무작위 데이터에 굉장히 많이 의존했다. 우리는 모델을 무작위로 처리가 할당되지 않은 데이터로 훈련시켰지만, 모든 평가는 처리가 무작위로 할당된 데이터로 이루어졌다. 이는 탄력성을 보다 신뢰성있게 평가하는 방법이 필요했기 때문이다. 랜덤데이터가 없다면 우리가 사용한 이 간단한 공식들은 쓸모가 없게 될 것이다. 지금은 매우 잘 알다시피, 단순한 선형회귀는 교란 변수가 존재할 때 변수 편향(variable bias)를 생략해왔다. 
+
+- 그럼에도 불구하고, 우리가 약간의 무작위 데이터라도 얻을 수 있게 된다면, 우리는 이미 랜덤모델을 비교하는 방법을 알고 있다. 다음 챕터에서, 우리는 무작위가 아닌 데이터를 다룰 것이지만, 시작하기 전에 나는 모델 평가에 대해 몇 마디 첨언하고자 한다.
+
+- 믿을 수 있는 모델 평가가 얼마나 중요한지 다시 곱씹어보자. 누적 이득 곡선으로, 우리는 드디어 인과추론을 위해 만들어진 모델을 평가하는 좋은 방법을 찾았다. 우리는 이제 어떤 모델이 처리 개인화에 더 나은 성능을 보이는지 결정할 수 있다. 중요한 건 이것이다. 인과추론에 대해 찾을 수 있는 대부분의 자료에서는 모델을 평가하는 좋은 방법을 제시하지 않는다. 내 생각에는, 이것이야말로 인과추론을 머신러닝만큼 유명하게 만들기 위해 필요한 부분(missing piece)이다. 좋은 평가방법이 있다면, 우리는 인과추론을 이미 예측모델에서 아주 유용하게 쓰이고 있는 train-test 패러다임에 좀더 가까이 적용할 수 있다. 이는 대담한 발언이다. 그 말은 내가 조심스럽게 말하고 있다는 뜻이지만, 지금까지 이에 대한 합당한 비판을 발견하지 못한 것도 사실이다. 혹시 있으면 알려달라.
 
 
 
