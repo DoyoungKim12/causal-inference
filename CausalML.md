@@ -54,7 +54,7 @@ https://causalml.readthedocs.io/en/latest/about.html <br>
 
 <br>
 
-- Doubly Robust (DR) learner¶
+- Doubly Robust (DR) learner
 
 Doubly Robust Estimation 복습 : propensity score와 outcome에 대한 선형회귀를 조합하여 ATE를 추정하는 방법으로, propensity score 모델과 outcome 모델 중 하나라도 제대로 추정되면 되기 때문에 Doubly Robust라는 이름이 붙었다. 아래 코드로 간단하게 구현할 수 있다.
 
@@ -77,8 +77,8 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
 <br>
 
 - Doubly Robust Instrumental Variable (DRIV) learner
-
-
+  - DR-learner에 도구변수 Z(assignment status)를 추가하여 LATE를 추정하는 모델로, LATE는 Defier(청개구리) 그룹을 제외한 Compliers 그룹에 대한 인과효과를 의미한다. 도구변수 Z의 역할은 처리 T를 outcome처럼 취급하여 Z에 따른 T를 추정하는 것이다. 여기서의 가정은 Z=1일 때의 T가 Z=0일 때의 T보다 커야한다는 것으로, 이는 곧 Compliers의 정의와 같다.
+  - DR-learner에서와 같이 3-fold CV 추정치를 사용하는 방식으로 구현되었다. 
 
 
 
