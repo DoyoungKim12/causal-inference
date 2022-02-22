@@ -104,6 +104,7 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
   - 단순 매칭과 비교했을 때 IPTW의 장점은 처리군과 대조군의 유사성 부족으로 인해 폐기되는 데이터가 더 적을 수 있다는 것이다. 단점으로는 극단적인 성향 점수가 매우 가변적인 추정치를 생성할 수 있다.
 - 2-Stage Least Squares (2SLS)
   - 도구변수는 OLS의 5개 가정 중 내생성을 충족시키기 위한 트릭이다. 내생성은 제 3의 요인이 독립변수 X와 종속변수 Y에 동시에 영향을 미칠 때 발생한다. 이러한 교란을 일으키는 요인을 U라고 할 때, U와는 낮은 상관성을 가지면서 독립변수 X와 높은 상관성을 가지는 도구변수 Z를 찾을 수 있다. 이 Z로 X를 회귀하는 회귀식을 구성하고(First stage), 이를 이용해 추정된 결과를 사용하여 Y를 추정(Second stage)하면 U로 인해 발생하는 외생성을 제거할 수 있다. (U와의 낮은 상관성은 error term으로 확인할 수 있다. error term과의 상관성이 낮으면 교란을 일으키는 무언가와의 상관성이 낮은 것으로 볼 수 있다.) 
+  - https://dodonam.tistory.com/227
 
 <br><br>
 
@@ -171,6 +172,8 @@ create_table_one(data=matched,
 - Meta-learners and Uplift Trees
   - 각각 다른 Meta-learner라도 같은 method인 estimate_ate로 쉽게 ATE를 추정할 수 있다.
   - Example notebook을 참고
+    - https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
+    - https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
 
 ```python
 from causalml.inference.meta import LRSRegressor
