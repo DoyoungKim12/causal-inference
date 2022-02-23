@@ -172,8 +172,12 @@ create_table_one(data=matched,
 - Meta-learners and Uplift Trees
   - 각각 다른 Meta-learner라도 같은 method인 estimate_ate로 쉽게 ATE를 추정할 수 있다.
   - Example notebook을 참고
-    - https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
-    - https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
+    - uplift_trees_with_synthetic_data :  https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
+    - meta_learners_with_synthetic_data: https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
+    - Meta-learners (S/T/X/R) with multiple treatment
+    - Comparing meta-learners across simulation setups
+    - Doubly Robust (DR) learner
+    - TMLE learner
 
 ```python
 from causalml.inference.meta import LRSRegressor
@@ -209,8 +213,26 @@ te, lb, ub =  rl.estimate_ate(X=X, p=e, treatment=treatment, y=y)
 print('Average Treatment Effect (BaseRRegressor using XGBoost): {:.2f} ({:.2f}, {:.2f})'.format(te[0], lb[0], ub[0]))
 ```
 
+<br><br>
 
+### More algorithms
+- Treatment optimization algorithms
+- Instrumental variables algorithms
+- Neural network based algorithm
+- Interpretation
+- Validation
 
+<br><br>
 
+### Synthetic Data Generation Process
+- 각각 Meta learner 실습용 notebook에서 확인할 수 있음
+  - Single Simulation
+  - Multiple Simulations
 
+<br><br>
 
+### Sensitivity Analysis
+
+<br><br>
+
+### Feature Selection
