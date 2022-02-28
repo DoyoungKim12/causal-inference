@@ -172,11 +172,20 @@ create_table_one(data=matched,
 - Meta-learners and Uplift Trees
   - 각각 다른 Meta-learner라도 같은 method인 estimate_ate로 쉽게 ATE를 추정할 수 있다.
   - Example notebook을 참고
-    - uplift_trees_with_synthetic_data :  https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
-    - meta_learners_with_synthetic_data: https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
-    - Meta-learners (S/T/X/R) with multiple treatment
-    - Comparing meta-learners across simulation setups
-    - Doubly Robust (DR) learner
+    - uplift_trees_with_synthetic_data : https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
+      - Uplift modeling에서는 가능한 모든 treatment에 대해 각각의 ITE를 구하고, ITE가 가장 높은 처리를 확인할 수 있다.
+      - ITE가 높게 예측된 상위 처리 그룹에서 실제로 대조군 대비 전환률이 높았는지를 그래프로 표현하여 모델의 성능을 가늠할 수 있다.  
+    - meta_learners_with_synthetic_data : https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
+      - 가상의 데이터로 actual ATE와 예측된 ATE를 비교, 어떤 모델의 성능이 좋은지 상대적으로 비교할 수 있다.
+      -  actual ATE를 알 수 없는 현실에서는 AUUC 정도가 유일한 validation 수단
+    - Meta-learners (S/T/X/R) with multiple treatment : https://colab.research.google.com/drive/1sz1vzDuMPs_Ft6azuK4dVhVlzD1pv0LK#scrollTo=mzsRq8_Ww3oO
+      - multiple treatment라고 해서 별다른 점이 있는 것은 아니다. treatment array에 몇 개의 유니크한 treatment 그룹이 있는지에 따라 각 그룹별로 ATE/CATE를 계산해 리턴할 뿐이다.
+    - Comparing meta-learners across simulation setups : https://colab.research.google.com/drive/16v4r5MNoU1CG2G75pnASMMbqk2fMdzha#scrollTo=rm6vo_8-BaMe
+      - 레퍼런스가 되는 paper의 benchmark simulation study를 코드로 구현한 내용
+      - 각 모델별로 mse를 비교하여 어떤 모델이 다양한 (가상의) 상황에서 일반적으로 좋은 성능을 보이는지 확인할 수 있다.  
+    - Doubly Robust (DR) learner : https://colab.research.google.com/drive/1PykRJ77vPqLi2axzYLQiumuFkjS2Tz8K#scrollTo=eHBhs6fIKOlo
+      - Doubly Robust (DR) learner를 사용하여 ITE를 계산, treatment effect model로 어떤 모델을 쓰는지에 따라 성능이 달라지는지 확인할 수 있다.
+      - hidden confounder가 존재할 때, DRIV 모델이 보다 안정적으로 편향되지 않은 ITE를 추정하는 것을 확인할 수 있다.
     - TMLE learner
 
 ```python
