@@ -143,7 +143,8 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
 <br>
 
 - Doubly-Robust라는 표현이 쓰이는 것으로 보아, 위에서 보았던 DR ATE 추정치의 발전된 형태로 보인다.
-- TMLE에 대해 가볍게 정리한 설명 : https://towardsdatascience.com/targeted-maximum-likelihood-tmle-for-causal-inference-1be88542a749
+- TMLE에 대한 가벼운 설명 : https://towardsdatascience.com/targeted-maximum-likelihood-tmle-for-causal-inference-1be88542a749
+- MLE의 쉽고 빠른 이해 : https://angeloyeo.github.io/2020/07/17/MLE.html
 
 
 <br><br>
@@ -287,17 +288,110 @@ print('Average Treatment Effect (BaseRRegressor using XGBoost): {:.2f} ({:.2f}, 
 
 ### More algorithms
 - Treatment optimization algorithms
+  - 아직 실험적인 단계에 있는 방법론이므로 다루지 않음 
 - Instrumental variables algorithms
-- Neural network based algorithm
-- Interpretation
+  - 2SLS method
+    - https://colab.research.google.com/drive/13x2I5tC0_xz3AzSTujil-Vmp67LuZbq3#scrollTo=nWzfFOtoCRPF
+    - OLS에 비해 true value에 가까운 ATE를 리턴하는 것을 확인할 수 있다.  
+- Neural network based algorithm 
+  - Deep Model에 대해서는 다루지 않음 
 - Validation
+  - AUUC 외의 것에 대해서는 다루지  
+
+<br><br>
+
+## Interpretable Causal ML 
+- https://colab.research.google.com/drive/1QT34BN0Usx4_jLuocwHMuyIVqCZKgyqb#scrollTo=FavHa2YZ5e-I
+
+<br>
+
+- Meta-Learner Feature Importances
+  - Meta-Learner의 각 피쳐별 중요도를 확인할 수 있다. (get_importance)
+  -  Currently supported methods are:
+      - auto (calculates importance based on estimator's default implementation of feature importance; estimator must be tree-based) <br> Note: if none provided, it uses lightgbm's LGBMRegressor as estimator, and "gain" as importance type
+      - permutation (calculates importance based on mean decrease in accuracy when a feature column is permuted; estimator can be any form) <br> Hint: for permutation, downsample data for better performance especially if X.shape[1] is large
+  - SHAP Value의 확인도 가능하다. (get_shap_values)
+  
+<br>
+
+```python
+from causalml.inference.meta import BaseSRegressor, BaseTRegressor, BaseXRegressor, BaseRRegressor
+
+slearner = BaseSRegressor(LGBMRegressor(), control_name='control')
+slearner.estimate_ate(X, w_multi, y)
+slearner_tau = slearner.fit_predict(X, w_multi, y)
+
+model_tau_feature = RandomForestRegressor()  # specify model for model_tau_feature
+
+slearner.get_importance(X=X, tau=slearner_tau, model_tau_feature=model_tau_feature,
+                        normalize=True, method='auto', features=feature_names)
+
+# Using the feature_importances_ method in the base learner (LGBMRegressor() in this example)
+slearner.plot_importance(X=X, tau=slearner_tau, normalize=True, method='auto')
+
+# Using eli5's PermutationImportance
+# 특정 피쳐를 제거했을 때 발생하는 성능의 손실을 계산하는 방법
+slearner.plot_importance(X=X, tau=slearner_tau, normalize=True, method='permutation')
+
+# Using SHAP
+shap_slearner = slearner.get_shap_values(X=X, tau=slearner_tau)
+
+# Plot shap values without specifying shap_dict
+slearner.plot_shap_values(X=X, tau=slearner_tau)
+
+# Plot shap values WITH specifying shap_dict
+slearner.plot_shap_values(X=X, shap_dict=shap_slearner)
+
+# interaction_idx set to 'auto' (searches for feature with greatest approximate interaction)
+slearner.plot_shap_dependence(treatment_group='treatment_A',
+                            feature_idx=1,
+                            X=X,
+                            tau=slearner_tau,
+                            interaction_idx='auto')
+```
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_2.PNG?" height='400'>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_3.PNG?" height='400'>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_4.PNG?" height='400'>
+
+
+<br>
+
+- Uplift Tree Visualization 
+  - Tree가 split하는 형태를 graphviz로 시각화하여 보여준다.
+```python
+from IPython.display import Image
+from causalml.inference.tree import UpliftTreeClassifier, UpliftRandomForestClassifier
+from causalml.inference.tree import uplift_tree_string, uplift_tree_plot
+from causalml.dataset import make_uplift_classification
+
+df, x_names = make_uplift_classification()
+uplift_model = UpliftTreeClassifier(max_depth=5, min_samples_leaf=200, min_samples_treatment=50,
+                                    n_reg=100, evaluationFunction='KL', control_name='control')
+
+uplift_model.fit(df[x_names].values,
+                treatment=df['treatment_group_key'].values,
+                y=df['conversion'].values)
+
+graph = uplift_tree_plot(uplift_model.fitted_uplift_tree, x_names)
+Image(graph.create_png())
+```
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_5.PNG?" height='400'>
+
+<br>
+
+- Uplift Tree Feature Importances
+```python
+pd.Series(uplift_model.feature_importances_, index=x_names).sort_values().plot(kind='barh', figsize=(12,8))
+```
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_6.PNG?" height='400'>
 
 <br><br>
 
 ### Synthetic Data Generation Process
 - 각각 Meta learner 실습용 notebook에서 확인할 수 있음
-  - Single Simulation
-  - Multiple Simulations
 
 <br><br>
 
@@ -306,3 +400,71 @@ print('Average Treatment Effect (BaseRRegressor using XGBoost): {:.2f} ({:.2f}, 
 <br><br>
 
 ### Feature Selection
+- https://colab.research.google.com/drive/1CDNccz8ctkMesHOhzk3yCdShpW73fFk5#scrollTo=OospaFuxrJc3
+- 일반적인 변수선택법은 outcome과 feature의 상관관계를 관찰하여 결정하는데, 우리가 만드는 모델의 타겟은 outcome이 아닌 uplift이므로 이는 최선이 아닐 수 있다.
+- 따라서 Uplift Modeling에 최적화된 Feature Selection 방법론을 아래와 같이 제시한다.
+  - Filter Methods
+    - 처리 여부를 나타내는 변수 Z와 확인하고자하는 feature, 그리고 그들의 교호작용항(interaction term)을 사용하여 outcome변수를 예측하는 선형회귀모델을 구성한다.
+    - 교호작용항의 계수에만 F 검정을 시행, 이 통계값이 크면 해당 feature는 강한 heterogeneous treatment effect와 상관이 있다는 것을 의미한다.
+  - LR filter (Likelihood ratio)
+    - 로지스틱 회귀모형의 교호작용항 계수에 대한 likelihood ratio 검정 통계량으로 정의한다.
+  - Filter method with K bins
+    - 샘플을 feature의 백분위를 기준으로 K개의 bin으로 나눈다. (여기서 K는 하이퍼파라미터) 
+    - 중요도 점수는 이러한 K개의 bins에 대한 처리효과의 divergence measure로 정의된다. (measure의 종류는 uplift tree의 split criterion과 같다)
+
+<br>
+
+- 변수선택법에 대한 보다 자세한 정리 : https://jaysung00.github.io/2020/12/17/Selection/
+
+```python
+from causalml.feature_selection.filters import FilterSelect
+from causalml.dataset import make_uplift_classification
+
+# define parameters for simulation
+y_name = 'conversion'
+treatment_group_keys = ['control', 'treatment1']
+n = 100000
+n_classification_features = 50
+n_classification_informative = 10
+n_classification_repeated = 0
+n_uplift_increase_dict = {'treatment1': 8}
+n_uplift_decrease_dict = {'treatment1': 4}
+delta_uplift_increase_dict = {'treatment1': 0.1}
+delta_uplift_decrease_dict = {'treatment1': -0.1}
+
+# make a synthetic uplift data set
+random_seed = 20200808
+df, X_names = make_uplift_classification(
+    treatment_name=treatment_group_keys,
+    y_name=y_name,
+    n_samples=n,
+    n_classification_features=n_classification_features,
+    n_classification_informative=n_classification_informative,
+    n_classification_repeated=n_classification_repeated,
+    n_uplift_increase_dict=n_uplift_increase_dict,
+    n_uplift_decrease_dict=n_uplift_decrease_dict,
+    delta_uplift_increase_dict = delta_uplift_increase_dict,
+    delta_uplift_decrease_dict = delta_uplift_decrease_dict,
+    random_seed=random_seed
+)
+
+# Feature selection with Filter method
+filter_f = FilterSelect()
+method = 'F'
+f_imp = filter_f.get_importance(df, X_names, y_name, method,
+                      treatment_group = 'treatment1')
+print(f_imp)
+
+# Use likelihood ratio test method
+method = 'LR'
+lr_imp = filter_f.get_importance(df, X_names, y_name, method,
+                      treatment_group = 'treatment1')
+print(lr_imp)
+
+# Use KL divergence method
+method = 'KL'
+kl_imp = filter_f.get_importance(df, X_names, y_name, method,
+                      treatment_group = 'treatment1',
+                      n_bins=10)
+print(kl_imp)
+```
