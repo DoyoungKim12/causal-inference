@@ -104,13 +104,15 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
     - 즉, 특정 기준으로 Compliers그룹과 Defiers 그룹을 구분해나가는 Tree라고 볼 수 있다.
     - 이제 특정 유닛이 특정 처리군에 속할 때와 대조군에 속할 때의 구매 확률을 각각 구하고, 그 차이로 유닛/별 Uplift(ITE의 차이)를 구할 수 있다.  
   
-  <br>
+<br>
   
-  <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_1.PNG?raw=true">
+  <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_1.PNG?" height='400'>
   
-  <br>
+<br>
 
-  - Uplift 모델링 관련 글이 잘 정리된 블로그 (정리된 4개 포스팅 모두 읽어보면 도움이 될 것이다) : https://jaysung00.github.io/2020/12/17/UM-overview/ 
+- Uplift 모델링 관련 글이 잘 정리된 블로그 (정리된 4개 포스팅 모두 읽어보면 도움이 될 것이다) : https://jaysung00.github.io/2020/12/17/UM-overview/ 
+
+<br>
 
 ### Value optimization methods
 - Counterfactual Unit Selection, Counterfactual Value Estimator
