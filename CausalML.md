@@ -129,7 +129,22 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
   - 단순 매칭과 비교했을 때 IPTW의 장점은 처리군과 대조군의 유사성 부족으로 인해 폐기되는 데이터가 더 적을 수 있다는 것이다. 단점으로는 극단적인 성향 점수가 매우 가변적인 추정치를 생성할 수 있다.
 - 2-Stage Least Squares (2SLS)
   - 도구변수는 OLS의 5개 가정 중 내생성을 충족시키기 위한 트릭이다. 내생성은 제 3의 요인이 독립변수 X와 종속변수 Y에 동시에 영향을 미칠 때 발생한다. 이러한 교란을 일으키는 요인을 U라고 할 때, U와는 낮은 상관성을 가지면서 독립변수 X와 높은 상관성을 가지는 도구변수 Z를 찾을 수 있다. 이 Z로 X를 회귀하는 회귀식을 구성하고(First stage), 이를 이용해 추정된 결과를 사용하여 Y를 추정(Second stage)하면 U로 인해 발생하는 외생성을 제거할 수 있다. (U와의 낮은 상관성은 error term으로 확인할 수 있다. error term과의 상관성이 낮으면 교란을 일으키는 무언가와의 상관성이 낮은 것으로 볼 수 있다.) 
-  - https://dodonam.tistory.com/227
+  - 도구변수와 2SLS에 대한 보다 자세한 설명 : https://dodonam.tistory.com/227
+
+<br>
+
+### Targeted maximum likelihood estimation (TMLE) for ATE
+- 자동으로(Automated), 이중으로 강건한(Doubly-Robust) 편향되지 않은 ATE 추정치를 계산하는 방법
+  - Propensity score, Predicted outcome(Treatment가 0,1인 경우 모두)을 생성한 후, 확률값처럼 0~1 사이의 값으로 min-max scaling된 Predicted outcome으로 Q를 정의한다.
+    - Q는 log(p/1-p)의 형태로, 여기서 p는 scaling된 Predicted outcome이다. p는 처리여부에 따라 p0, p1이 각각 존재한다.
+  - 다양한 파라미터로 정의된 복잡한 pseudo log-likelihood function를 극대화하는 Q를 구한다.
+  - 목적함수를 극대화하는 Q와 다른 파라미터로 Q1과 Q0를 정의, 두 값의 차이로 ATE를 추정한다.
+
+<br>
+
+- Doubly-Robust라는 표현이 쓰이는 것으로 보아, 위에서 보았던 DR ATE 추정치의 발전된 형태로 보인다.
+- TMLE에 대해 가볍게 정리한 설명 : https://towardsdatascience.com/targeted-maximum-likelihood-tmle-for-causal-inference-1be88542a749
+
 
 <br><br>
 
@@ -224,6 +239,15 @@ create_table_one(data=matched,
       - hidden confounder가 존재할 때, DRIV 모델이 보다 안정적으로 편향되지 않은 ITE를 추정하는 것을 확인할 수 있다.
       <br> 
     - TMLE learner
+      - https://colab.research.google.com/drive/1nsKbRIkHuUg7MvyHoueeG-yE14tFvqTK#scrollTo=kG7BFo6ykl3Y 
+      - propensity score와 predicted outcome으로 doubly-robust한 ATE 추정치를 찾는 방법
+        - 이를 pseudo log-likelihood function를 극대화하는 파라미터로 구한다는 점에서 기존의 DR 방법론과 약간의 차이가 있는 듯 하다. (기존의 DR 방법론은 딱히 뭘 극대화하거나 하지 않고 단순히 가중치를 조정하고 demean을 해주는 정도의 트릭이 들어갔다)
+      - 이 예제에서는 ground truth를 대체하는 용도로써 TMLE를 소개한다. ground truth가 존재할 때와 존재하지 않을 때의 gain을 구하는 방법이 각각 다르기 때문에, ground truth가 없을 때의 gain이 자칫 의미없는 것처럼 보일 수 있을 때 TMLE를 사용하여 AUUC를 계산할 수 있다는 것이다.
+        - 여기서의 TMLE로 구한 ATE는 사전에 지정한 그룹 수만큼 묶여 grouped gain이 계산된다.
+        - input으로는 모든 공변량과 outcome, propensity score, treatment, 그리고 예측된 ITE를 넣어준다. 계산된 gain을 table 또는 plot으로 확인할 수 있다.
+        - AUUC 뿐만 아니라 Qini도 쉽게 계산할 수 있다.
+
+<br> 
 
 ```python
 from causalml.inference.meta import LRSRegressor
