@@ -296,11 +296,11 @@ print('Average Treatment Effect (BaseRRegressor using XGBoost): {:.2f} ({:.2f}, 
 - Neural network based algorithm 
   - Deep Model에 대해서는 다루지 않음 
 - Validation
-  - AUUC 외의 것에 대해서는 다루지  
+  - AUUC 외의 것에 대해서는 다루지 않음  
 
 <br><br>
 
-## Interpretable Causal ML 
+### Interpretable Causal ML 
 - https://colab.research.google.com/drive/1QT34BN0Usx4_jLuocwHMuyIVqCZKgyqb#scrollTo=FavHa2YZ5e-I
 
 <br>
