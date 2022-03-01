@@ -86,6 +86,17 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
 - Uplift Tree
   - Uplift Tree 접근법은 분할(splitting) 기준이 Uplift의 차이에 기초하는 트리 기반 알고리즘을 사용하는 일련의 방법으로 구성된다. gain을 축정하는 3가지 방식을 제시하며, 이는 각각 KL divergence, Euclidean Distance, Chi-square divergence이다.
   - DDP와 CTS도 각각 샘플의 분할 기준 중 하나를 의미한다. 
+  
+<br>
+
+- (추가 설명) Uplift 모델링에 대한 이해
+  - 일반적으로 우리가 알고있는 모델링은 outcome을 예측하는 것으로, 이는 (구매여부를 예측한다고 한다면) P(buy|treatment)를 예측하는 것과 같다.
+    - "어떠한 고객이 캠페인을 통한 매상이 높을 것인가?"
+  - 그러나, Uplift는 여기에서 한발 더 나아간다. Uplift = P(buy|treatment) - P(buy|not_treatment)로, 아래와 같은 질문에 답할 수 있다.
+    - "캠페인이 고객에게 실제 우리회사 제품의 구매를 유발했나?"
+    - "이미 사려고 했던 사람에게 캠페인을 하는 낭비 를 하지는 않았나?"
+    - "캠페인이 누군가의 구매를 더욱 악화 시키지는 않았나?"
+  - Uplift 모델링 관련 글이 잘 정리된 블로그 (정리된 4개 포스팅 모두 읽어보면 도움이 될 것이다) : https://jaysung00.github.io/2020/12/17/UM-overview/ 
 
 <br>
 
@@ -174,6 +185,7 @@ create_table_one(data=matched,
   - Example notebook을 참고
     - uplift_trees_with_synthetic_data 
       - https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
+      - Uplift Tree는 Uplift를 타겟 값으로 예측하는 모델이다. 
       - Uplift modeling에서는 가능한 모든 treatment에 대해 각각의 ITE를 구하고, ITE가 가장 높은 처리를 확인할 수 있다.
       - ITE가 높게 예측된 상위 처리 그룹에서 실제로 대조군 대비 전환률이 높았는지를 그래프로 표현하여 모델의 성능을 가늠할 수 있다.  
     - meta_learners_with_synthetic_data 
