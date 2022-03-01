@@ -102,7 +102,9 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
   - 이제 Uplift tree는 Uplift를 극대화하는 분할 기준을 찾아 split한다. 이때, 기존의 outcome을 예측하는 tree model과의 가장 큰 차이점은 단순히 outcome class의 분포를 보는 것이 아니라 실험군과 대조군의 outcome class 분포 차이를 측정한다는 점이다.
     - 아래 그림을 보면, 분할된 왼쪽 그룹은 T=1일 때 구매/T=0일 때 구매하지 않는 Compliers이고 오른쪽 그룹은 T=1일때 구매하지않음/T=0일때 구매하는 Defiers이다.
     - 즉, 특정 기준으로 Compliers그룹과 Defiers 그룹을 구분해나가는 Tree라고 볼 수 있다.
-    - 이제 특정 유닛이 특정 처리군에 속할 때와 대조군에 속할 때의 구매 확률을 각각 구하고, 그 차이로 유닛/별 Uplift(ITE의 )를 구할 수 있다.  
+    - 이제 특정 유닛이 특정 처리군에 속할 때와 대조군에 속할 때의 구매 확률을 각각 구하고, 그 차이로 유닛/별 Uplift(ITE의 차이)를 구할 수 있다.  
+  
+  <br>
   
   <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_1.PNG?raw=true">
   
