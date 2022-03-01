@@ -96,9 +96,19 @@ CausalML에서는 이를 3-fold CV 추정치를 사용하는 방식으로 구현
     - "캠페인이 고객에게 실제 우리회사 제품의 구매를 유발했나?"
     - "이미 사려고 했던 사람에게 캠페인을 하는 낭비 를 하지는 않았나?"
     - "캠페인이 누군가의 구매를 더욱 악화 시키지는 않았나?"
-  - Uplift 모델링 관련 글이 잘 정리된 블로그 (정리된 4개 포스팅 모두 읽어보면 도움이 될 것이다) : https://jaysung00.github.io/2020/12/17/UM-overview/ 
 
-<br>
+  <br>
+  
+  - 이제 Uplift tree는 Uplift를 극대화하는 분할 기준을 찾아 split한다. 이때, 기존의 outcome을 예측하는 tree model과의 가장 큰 차이점은 단순히 outcome class의 분포를 보는 것이 아니라 실험군과 대조군의 outcome class 분포 차이를 측정한다는 점이다.
+    - 아래 그림을 보면, 분할된 왼쪽 그룹은 T=1일 때 구매/T=0일 때 구매하지 않는 Compliers이고 오른쪽 그룹은 T=1일때 구매하지않음/T=0일때 구매하는 Defiers이다.
+    - 즉, 특정 기준으로 Compliers그룹과 Defiers 그룹을 구분해나가는 Tree라고 볼 수 있다.
+    - 이제 특정 유닛이 특정 처리군에 속할 때와 대조군에 속할 때의 구매 확률을 각각 구하고, 그 차이로 유닛/별 Uplift(ITE의 )를 구할 수 있다.  
+  
+  <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/causalml_1.PNG?raw=true">
+  
+  <br>
+
+  - Uplift 모델링 관련 글이 잘 정리된 블로그 (정리된 4개 포스팅 모두 읽어보면 도움이 될 것이다) : https://jaysung00.github.io/2020/12/17/UM-overview/ 
 
 ### Value optimization methods
 - Counterfactual Unit Selection, Counterfactual Value Estimator
@@ -185,24 +195,30 @@ create_table_one(data=matched,
   - Example notebook을 참고
     - uplift_trees_with_synthetic_data 
       - https://colab.research.google.com/drive/1RNKzu8N5HmkjrX7peKvwO1KOdHcP3Xrv#scrollTo=KpOBGRK1Yen-
-      - Uplift Tree는 Uplift를 타겟 값으로 예측하는 모델이다. 
-      - Uplift modeling에서는 가능한 모든 treatment에 대해 각각의 ITE를 구하고, ITE가 가장 높은 처리를 확인할 수 있다.
-      - ITE가 높게 예측된 상위 처리 그룹에서 실제로 대조군 대비 전환률이 높았는지를 그래프로 표현하여 모델의 성능을 가늠할 수 있다.  
+      - Uplift modeling에서는 가능한 모든 treatment에 대해 각각의 유닛별 조건부 전환률(ITE)을 구하고, 각 조건부 전환률의 차이인 Uplift(ITE의 차이)가 가장 높은 treatment를 확인할 수 있다.
+      - Uplift(ITE의 차이)가 높게 예측된 상위 K명의 처리 그룹에서 실제로 대조군 대비 전환률이 높았는지를 그래프로 표현하여 모델의 성능을 가늠할 수 있다. (AUUC)
+      <br> 
     - meta_learners_with_synthetic_data 
       - https://colab.research.google.com/drive/1kr8R5UiyfPJV4FPXuB5Q9Lpy1IQ9-qFb#scrollTo=_4rmlVZ0HRuZ
-      - 가상의 데이터로 actual ATE와 예측된 ATE를 비교, 어떤 모델의 성능이 좋은지 상대적으로 비교할 수 있다.
-      -  actual ATE를 알 수 없는 현실에서는 AUUC 정도가 유일한 validation 수단
+      - 가상의 데이터로 actual ATE와 예측된 ATE 분포를 시각화하여 비교, 어떤 모델의 성능이 좋은지 상대적으로 가늠할 수 있다.
+      - actual ATE를 알 수 없는 현실에서는 AUUC 정도가 유일한 validation 수단
+      <br> 
     - Meta-learners (S/T/X/R) with multiple treatment 
       - https://colab.research.google.com/drive/1sz1vzDuMPs_Ft6azuK4dVhVlzD1pv0LK#scrollTo=mzsRq8_Ww3oO
       - multiple treatment라고 해서 별다른 점이 있는 것은 아니다. treatment array에 몇 개의 유니크한 treatment 그룹이 있는지에 따라 각 그룹별로 ATE/CATE를 계산해 리턴할 뿐이다.
+        - 여기서의 CATE는 유닛별로 계산된 Treatment Effect로, ITE와 같은 의미로 이해된다.  
+      <br> 
     - Comparing meta-learners across simulation setups 
       - https://colab.research.google.com/drive/16v4r5MNoU1CG2G75pnASMMbqk2fMdzha#scrollTo=rm6vo_8-BaMe
       - 레퍼런스가 되는 paper의 benchmark simulation study를 코드로 구현한 내용
-      - 각 모델별로 mse를 비교하여 어떤 모델이 다양한 (가상의) 상황에서 일반적으로 좋은 성능을 보이는지 확인할 수 있다.  
+      - 각 모델별로 mse를 비교하여 어떤 모델이 다양한 (가상의) 상황에서 일반적으로 좋은 성능을 보이는지 확인할 수 있다.
+      <br>   
     - Doubly Robust (DR) learner
       - https://colab.research.google.com/drive/1PykRJ77vPqLi2axzYLQiumuFkjS2Tz8K#scrollTo=eHBhs6fIKOlo
       - Doubly Robust (DR) learner를 사용하여 ITE를 계산, treatment effect model로 어떤 모델을 쓰는지에 따라 성능이 달라지는지 확인할 수 있다.
+        - treatment effect model은 독립변수로 DR 추정치를 fitting하는 모델로, 이제 이 모델에 독립변수들을 input으로 넣으면 DR 추정치가 리턴될 것이다.
       - hidden confounder가 존재할 때, DRIV 모델이 보다 안정적으로 편향되지 않은 ITE를 추정하는 것을 확인할 수 있다.
+      <br> 
     - TMLE learner
 
 ```python
