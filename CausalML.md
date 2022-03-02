@@ -296,7 +296,7 @@ print('Average Treatment Effect (BaseRRegressor using XGBoost): {:.2f} ({:.2f}, 
 - Neural network based algorithm 
   - Deep Model에 대해서는 다루지 않음 
 - Validation
-  - AUUC 외의 것에 대해서는 다루지 않음  
+  - AUUC와 Sensitivity analysis 외의 것에 대해서는 다루지 않음  
 
 <br><br>
 
