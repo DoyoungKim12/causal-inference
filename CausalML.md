@@ -400,6 +400,7 @@ pd.Series(uplift_model.feature_importances_, index=x_names).sort_values().plot(k
 - (Sensitivity Analysis를 포함한) 인과추론 결과 검증 방법이 간단하게 정리된 글 : https://medium.com/data-science-at-microsoft/causal-inference-part-3-of-3-model-validation-and-applications-c84764156a29
 
 <br>
+
 - https://colab.research.google.com/drive/1tLaDWDlR3xxhn4kP00wTHaIV_NnsWgU5#scrollTo=57W7Q5afBapA
 - 다양한 문제 상황을 가정하여 모델 추정치의 robustness(강건성)을 평가하는 방법이다.
   - 예를 들어 모델에 공변량으로 특정 노이즈가 추가되었을 때, ATE의 변동이 적다면 robust한 모델로 평가할 수 있다.
@@ -407,7 +408,7 @@ pd.Series(uplift_model.feature_importances_, index=x_names).sort_values().plot(k
   - Placebo Treatment: 처리 여부를 나타내는 컬럼을 랜덤한 값으로 바꾼다. (보다 구체적으로는 index를 랜덤하게 섞어서 0과 1의 비율은 유지하면서 각각 랜덤한 값이 배정되도록 할 수 있다.) 이 경우에는 ATE가 0으로 나오는 것이 최선으로, 만약 ATE가 0에 가까운 값이 나온다면 그만큼 편향되지 않은 모델을 만들었다고 평가할 수 있다.
   - Irrelevant Additional Confounder: White noise를 교란(처리와 결과의 공통원인) 변수 중 하나로 추가한다. 단순한 noise 변수를 추가한 것이므로, ATE에 변동이 거의 없다면 편향되지 않은 모델을 만들었다고 평가할 수 있다.
   - Subset validation: 데이터의 일부를 제거한 상태로 모델링하는 것. 마찬가지로 ATE에 변동이 거의 없다면 편향되지 않은 모델을 만들었다고 평가할 수 있다.
-  - Selection Bias method with One Sided confounding function and Alignment confounding function : 실험군이 대조군에 비해 평균적으로 더 높거나 낮은 outcome을 갖도록 조작하여 그 때의 ATE가 의도한 바에 맞게 추정되는지를 확인하는 방법이다. (Selection Bias는 충돌변수(처리와 결과가 모두 충돌변수의 원인)나 mediator 변수를 조건화할때 발생하는 문제고 알고 있는데, 교란변수 함수를 사용한다는 점이 이해되지 않아서 공부가 필요함)
+  - Selection Bias method with One Sided confounding function and Alignment confounding function : 실험군이 대조군에 비해 평균적으로 더 높거나 낮은 outcome을 갖도록 조작하여 그 때의 ATE가 의도한 바에 맞게 추정되는지를 확인하는 방법이다. (Selection Bias는 충돌변수(처리와 결과가 모두 충돌변수의 원인)나 mediator 변수를 조건화할때 발생하는 문제로 알고 있는데, 교란변수 함수를 사용한다는 점이 이해되지 않아서 공부가 필요함)
     - reference(교란변수 함수를 이해하려면 읽어야 함) : https://www.mattblackwell.org/files/papers/causalsens.pdf 
   - Random Replace: 특정 공변량을 의미없는 무작위 변수로 교체하는 것. 마찬가지로 ATE에 변동이 거의 없다면 편향되지 않은 모델을 만들었다고 평가할 수 있다.
 
