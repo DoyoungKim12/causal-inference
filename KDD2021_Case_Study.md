@@ -57,20 +57,22 @@
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_7.PNG?raw=true" width=600><br><br>
 
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_8.PNG?raw=true" width=600><br><br>
+
 <br><br><br><br>
 
 ## Case Study #1: Causal Impact Analysis with Observational Data: CeViChE at Uber
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_8.PNG?raw=true" width=600><br><br>
-
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_9.PNG?raw=true" width=600><br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_10.PNG?raw=true" width=600><br><br>
 
 - 실제 실험이 더 높은 내부 타당성을 가지지만, 실제로는 무작위로 처리를 제공하거나 보류하는 것이 불가능한 경우가 있음
 - 관측적 인과 추론을 통해 인과 관계를 설정하고 효과(ATE)를 추정할 수 있음
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_10.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_11.PNG?raw=true" width=600><br><br>
 
 - 교차판매의 기회는 크지만, 그 **장기적인 금전적 효과**를 엄격히 정량화할 것을 요구받음
   - 마케터 : 교차판매 예산기획 시점에서, 그들의 (신규)고객 획득을 위한 노력을 금전적 효과와 연결시킬 방법이 없음 (액션에 따라 어느 정도의 예산이 필요할지 모름)
@@ -79,14 +81,14 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_11.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_12.PNG?raw=true" width=600><br><br>
 
 - 통합 플랫폼으로의 우버에서 교차판매를 홍보하는 것이 비즈니스에 도움이 될지, 해가 될지를 알고 싶음
 - 증분효과가 얼마나 될지를 알고싶음
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_12.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_13.PNG?raw=true" width=600><br><br>
 
 - CausalML : 관찰 데이터를 활용하여 인과관계를 확인
   - 현장 실험과 연관된 시간축
@@ -96,7 +98,7 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_13.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_14.PNG?raw=true" width=600><br><br>
 
 - AB 테스트가 불가능할 때, 여러 시나리오에 적용되는 접근 방식의 일반화
   - Cross-sell/Upsell
@@ -111,13 +113,13 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_14.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_15.PNG?raw=true" width=600><br><br>
 
 - CeViChE 프레임워크의 구조
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_15.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_16.PNG?raw=true" width=600><br><br>
 
 - Methodology (방법론)
   - CeViChE는 잘 구성된 튜닝 가능한 매칭기법과 엄격한 추론 검증기법을 사용함
@@ -129,7 +131,7 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_16.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_17.PNG?raw=true" width=600><br><br>
 
 - 첫번째 단계 : Analysis Setup
   - 피쳐를 모으고 정제하는 단계
@@ -138,7 +140,7 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_17.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_18.PNG?raw=true" width=600><br><br>
 
 - 두번째 + 세번째 단계 : PSM
   - Propensity score matching : 처리군과 대조군의 동질성을 보장하기 위한 유저 레벨의 매칭 과정
@@ -149,12 +151,12 @@
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_18.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_19.PNG?raw=true" width=600><br><br>
 
 - 행정 구역별로 동질한 처리군과 대조군을 생성
 
 <br><br>
 
-<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_19.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_20.PNG?raw=true" width=600><br><br>
 
 - 
