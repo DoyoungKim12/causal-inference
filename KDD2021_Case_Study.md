@@ -159,4 +159,21 @@
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_20.PNG?raw=true" width=600><br><br>
 
-- 
+- 네번째 단계 : 추론
+  - 다양한 방법을 활용하여 추론결과를 검증
+  - 매칭 과정을 거친 데이터셋에 모델을 적용하여 ATE를 추정하고, 이 과정은 다양한 알고리즘과 시간 프레임에 의해 교차 검증됨
+  - 메타 러너 알고리즘을 메인 추론 모델로 하여, 전환 이벤트가 예약에 미치는 영향을 추론함
+  - 베이스 러너로 각각 XGBoost와 LR을 사용한 2개 모델 set으로 추론의 타당성을 평가함 (실제로 ATE를 측정할 일이 있을때 유용하게 참고할만한 구조)
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_21.PNG?raw=true" width=600><br><br>
+
+- 다섯번째 단계 : 검증 
+  - 추론의 강건성을 체크하기 위한 민감도 분석
+    - Placebo Treatment
+    - Replace/Add Irrelevant Confounder 
+    - Subset Validation
+    - Selection Bias
+
+<br><br>
