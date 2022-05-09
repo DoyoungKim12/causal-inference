@@ -177,3 +177,58 @@
     - Selection Bias
 
 <br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_22.PNG?raw=true" width=600><br><br>
+
+- Case Study
+  - Monetary Impact of Rider to Eater (R2E) Cross Sell
+  - 우버 사용자가 우버이츠를 사용하도록 권해서 교차판매가 일어날 경우 얻게되는 금전적 이익이 있는가?
+
+<br>
+
+- 분석 셋업
+  - 처리 이전 기간 : 피쳐 수집 기간 (3개월)
+  - 처리 기간 (3개월)
+  - 처리 이후 기간 : GB 관찰
+  - 처리군 : 처리기간에 rider에서 eater로 전환된 사람
+  - 대조군 : 처리 이후 기간에도 rider에서 eater로 전환되지 않은 사람 
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_23.PNG?raw=true" width=600><br><br>
+
+- PSM
+  - 매칭은 처리군과 대조군 사이의 편향을 제거함
+  - 매칭 이후 대조군의 수와 GB, Trip 수준이 동질하게 맞춰진 것을 확인
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_24.PNG?raw=true" width=600><br><br>
+
+- Propensity Score의 분포를 통해 동질성 재확인
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_25.PNG?raw=true" width=600><br><br>
+
+- 메타 러너
+  - 다수의 메타 러너에서 같은 결과를 확인할 수 있음
+  - 교차판매로 시너지 효과 발생 : 우버이츠로의 전환이 우버 사용으로 이어졌음 
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_26.PNG?raw=true" width=600><br><br>
+
+- 민감도 분석
+  - 민감도 분석에 의해 검증된 강건한 결과값
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_27.PNG?raw=true" width=600><br><br>
+
+- 매칭결과 검증
+  - 표준화된 평균차(SMD) 관찰
+
+<br><br>
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_28.PNG?raw=true" width=600><br><br>
