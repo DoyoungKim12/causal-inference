@@ -336,10 +336,49 @@
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_37.PNG?raw=true" width=600><br><br>
 
 - 검증 : Lift Curve
-  - 리프트 곡선은 모집단을 최상의 리프트 성능에서 최악의 리프트 성능으로 정렬하고, 이를 각 세그먼트별로 분할하여 구축됩니다. y축은 각 세그먼트의 증분효과 을 나타냅니다.
-리프트 곡선은 직관적으로 이해하기 쉽고 해석하기 어렵다 
+  - 리프트 곡선은 모집단을 최상의 리프트 성능에서 최악의 리프트 성능으로 정렬하고, 이를 각 세그먼트별로 분할하여 구축한다. y축은 각 세그먼트의 증분효과 이득을 나타낸다. 리프트 곡선은 직관적으로 이해하기 쉽지만, 해석하기는 어렵다.
+
+<br><br>
+
+- 이 외에도 다양한 검증 방법을 몇 개의 슬라이드를 더 할애하여 소개함
+- 아무래도 본인들이 사용하는 방법론이 정말 믿을만 하다는 것을 설득하기 위해 여기에 많은 지면을 할애한 것으로 보임
+  - Gain Chart
+    - 이득(gain) 차트는 모집단을 최상에서 최악의 리프트 성능으로 정렬하고, 이를 세그먼트로 분할하여 보여준다. y축은 누적 증분 이득을 나타내고, x축은 타겟인 모집단의 비율을 나타낸다.
+  - Qini Curve 
+    - Qini-Coefficient는 Uplift 곡선과 랜덤 곡선의 아래 영역 넓이의 차이를 말한다.  Qini-Coefficient 값이 1에 가까울수록 업리프트 모델의 성능이 좋다는 뜻이다.
+  - AUUC (Area Under Uplift Curve)
+    - AUUC score와 Qini score는 두개의 각각 다른 업리프트 곡선의 아래 영역 넓이를 계산한다. 두 점수 모두 모델 성능을 비교하기 위한 정량 지표이다. 
+  - TMLE for Robust Eval.
+    - propensity score와 predicted outcome으로 doubly-robust한 ATE 추정치를 찾는 방법
+    - TMLE Result : Gain Curve with TMLE as Ground Truth 
+
+<br><br>
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_38.PNG?raw=true" width=600><br><br>
+
+- 배포 : 타게팅 전략
+  - 위 이미지에서 보는 차트가 Gain Curve with TMLE as Ground Truth 이다.
+  - 상위 60%까지의 업리프트 스코를 가지는 타게팅 유저가 대부분의 ATE를 만들어낸다.
+  - 이로써 40%의 예산을 아끼면서 광고효율을 67% 상승시킬 수 있다.
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_39.PNG?raw=true" width=600><br><br>
+
+- 배포 : 온라인 검증
+  - 상위 60%의 오디언스에만 광고를 노출했을 때의 ROAS가 2배 가량 높음 
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_40.PNG?raw=true" width=600><br><br>
 
+- 배포 : 탐험/실행 설정
+  - 각 페이즈별로 다른 모델을 적용
+  - 전체의 80%에게는 모델이 찾아낸 높은 CATE가 기대되는 유저에게만 광고 노출 (exploit)
+  - 나머지 20%는 정보를 모으기 위한 실험적 액션 적용 (explore)
+    - 5%에는 모든 유저에 광고 노출
+    - 5%에는 모든 유저에 비딩하지 않음
+    - 10%에는 광고 노출 X 
+    - 아무튼 이 정보를 활용하여 다음 페이즈의 모델을 생성
+
+<br><br>
