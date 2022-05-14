@@ -232,3 +232,21 @@
 <br><br>
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_28.PNG?raw=true" width=600><br><br>
+
+<br><br><br><br>
+
+## Case Study #2: Targeting Optimization: Bidder at Uber
+
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_29.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_30.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_31.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_32.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_33.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_34.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_35.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_36.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_37.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_38.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_39.PNG?raw=true" width=600><br><br>
+<img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_40.PNG?raw=true" width=600><br><br>
+
