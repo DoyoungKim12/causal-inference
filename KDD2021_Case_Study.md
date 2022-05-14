@@ -238,14 +238,107 @@
 ## Case Study #2: Targeting Optimization: Bidder at Uber
 
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_29.PNG?raw=true" width=600><br><br>
+
+- 배경 : 광고주로서의 우버
+  - 공급 측
+    - 퍼블리셔 : NYT, WSJ, ESPN 등 광고가 노출되는 지면 또는 채널
+    - Ad Exchange : AdX, MoPub 등 가장 높은 광고 단가를 제시한 광고주의 광고 게시
+  - 수요 측
+    - 우버 비딩 플랫폼
+      - 유동적인 비딩 전략
+      - ML 모델
+      - 증분효과 측정
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_30.PNG?raw=true" width=600><br><br>
+
+- 배경 : 미디어 바잉을 위한 우버 비더
+  - 제한된 예산으로 누구에게 광고를 노출할지를 어떻게 결정할 것인가? 
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_31.PNG?raw=true" width=600><br><br>
+
+- 문제 정의
+  - 처리(광고노출) + 유저의 반응에 기반하여, 4개의 그룹으로 분류
+    - Persuadable
+    - Always-taker
+    - Never-taker
+    - Defier
+  - 광고주로써, 이론적으로 우리는 Persuadable user에 관심이 있는데, 이들은 광고가 노출되었을 때 더 많은 이동/주문을 하는 유저들이다. 업리프트 모델은 이러한 유저들을  인과추론과 ML로 특정하기 위해 설계되었다.
+
+<br><br> 
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_32.PNG?raw=true" width=600><br><br>
+
+- Method : Overview
+  - 실험 설정
+    - 무엇을 모델링할 것인지
+    - 모델링의 결과물을 어떻게 사용할 것인지 이해하기
+    - 사업 지표 정의
+    - 유저 정의
+    - 처리(광고노출) 정의
+  - 모델링
+    - 정확도와 강건성 검증
+    - 인사이트를 인과관계로 전환
+  - 온라인 검증
+    - 온라인 실험으로 업리프트 모델을 대조군과 비교하기
+
+<br><br> 
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_33.PNG?raw=true" width=600><br><br>
+
+- 실험 설정
+  - 기간 구분 
+    - 처리 전 기간 (4주)
+    - 처리 기간 (4주)
+    - 유동적인 처리 후 기간 (7일 또는 14일)
+  - 실험군/대조군 구분
+    - 실험군 : 처리 기간 내 최소 1회 이상 광고에 노출된 유저
+    - 대조군 : 우리가 최소 1번이라도 광고 노출하려고 비딩했지만 실패한 유저
+
+<br><br> 
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_34.PNG?raw=true" width=600><br><br>
+
+- 데이터와 모델 설정
+  - 피쳐 (gb는 gross booking의 약자)
+    - gb_21d : 지난 21일 동안 사용자의 총 예약 수
+    - order_21d : 지난 21일 동안 사용자의 총 우버이츠 주문 수
+    - avg_waiting_time : 각 주문에 대한 사용자의 평균 대기 시간
+    - avg_meal_subtotal : 각 식사에 대한 사용자의 평균 소계
+    - total_ads_3m : 지난 3개월 동안 사용자에게 노출된 광고 수
+    - city_avg_eater_gb : 과거 21일 동안의 도시별 평균 총 예약 수
+  - 모델 변수
+    - X : features
+    - w : 처리 그룹
+    - Y : 결과
+    - p : 성향점수
+    - tau : 처리효과 
+ 
+<br><br> 
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_35.PNG?raw=true" width=600><br><br>
+
+- 유저 타겟팅을 위한 CATE
+  - CausalML은 각 메타러너가 CATE를 계산하기 위한 easy-to-use 인터페이스를 제공
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_36.PNG?raw=true" width=600><br><br>
+
+- 검증 : 베이스 러너
+  - 최종 CATE 예측결과 외에도, 베이스 러너의 예측결과는 러너 인스턴스를 통해 접근가능함 
+
+<br><br>
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_37.PNG?raw=true" width=600><br><br>
+
+- 검증 : Lift Curve
+  - 리프트 곡선은 모집단을 최상의 리프트 성능에서 최악의 리프트 성능으로 정렬하고, 이를 각 세그먼트별로 분할하여 구축됩니다. y축은 각 세그먼트의 증분효과 을 나타냅니다.
+리프트 곡선은 직관적으로 이해하기 쉽고 해석하기 어렵다 
+
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_38.PNG?raw=true" width=600><br><br>
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_39.PNG?raw=true" width=600><br><br>
 <img src="https://github.com/DoyoungKim12/causal-inference/blob/master/img_BnT/kdd_40.PNG?raw=true" width=600><br><br>
